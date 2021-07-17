@@ -1,0 +1,7 @@
+.DS_store
+tmp
+*.env
+node_modules
+.env.*
+!.env.example
+debug.log
