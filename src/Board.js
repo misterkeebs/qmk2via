@@ -1,30 +1,39 @@
 const _ = require('lodash');
 const _diff = require('array-diff')();
-const PARSER_RE = /#define LAYOUT(?<name>.*?)\(.*?\)\s+\{[\s\\]+(?<matrix>.*?)\}\n/gms;
+const PARSER_RE = /#define LAYOUT(?<name>.*?)\(.*?\)[\s\n\\]+\{[\s\\]+(?<matrix>.*?)\}\n/gms;
 
 const fmti = v => _.isObject(v) ? JSON.stringify(v) : `"${v}"`;
 const fmt = arr => arr.map(fmti).join(',');
 
+const iskno = s => ['KC_NO', 'KNO'].includes(s);
+
 class Board {
-  static parse(header, infoStr) {
+  static parse(header, config, infoStr) {
     const info = JSON.parse(infoStr);
     let match = PARSER_RE.exec(header);
     const layouts = {};
     do {
       const { name, matrix } = match.groups;
-      const parsedMatrix = matrix.trim().replace(/\{(.*?)\}\s*,*\s\\/gm, '$1').split('\n').map(s => s.trim().split(',').map(s => s.trim()).filter(s => s !== 'KNO'));
+      const parsedMatrix = matrix.trim().replace(/\{(.*?)\}\s*,*\s\\/gm, '$1').split('\n').map(s => s.trim().split(',').map(s => s.trim()).filter(s => !iskno(s)));
       layouts[name.split('').splice(1).join('')] = {
         matrix: parsedMatrix,
       };
     } while ((match = PARSER_RE.exec(header)) !== null);
 
-    return new Board(layouts, info);
+    return new Board(layouts, config, info);
   }
 
-  constructor(layouts, info) {
+  constructor(layouts, config, info) {
     this.layouts = layouts;
     this.info = info;
+    this.config = this.parseConfig(config);
     this.transform();
+  }
+
+  parseConfig(config) {
+    const rows = parseInt(/MATRIX_ROWS\s*(\d+)/.exec(config)[1], 10);
+    const cols = parseInt(/MATRIX_COLS\s*(\d+)/.exec(config)[1], 10);
+    return { rows, cols };
   }
 
   transform() {
@@ -32,7 +41,7 @@ class Board {
     _.forEach(layouts, (def, fullName) => {
       const { layout } = def;
       const name = fullName.replace(/^LAYOUT_/, '');
-      const rows = [...Array(this.info.height)].map(e => []);
+      const rows = [...Array(this.config.rows)].map(e => []);
 
       let col = 0;
       let row = 0;
@@ -151,7 +160,7 @@ class Board {
         options.forEach((i, j) => {
           rows[i] = rows[i].map(item => _.isObject(item) ? item : `${item}\n\n\n${labels.length},${j}`);
         });
-        labels.push(`Option ${labels.length}`);
+        labels.push(_.flatten([`Option ${labels.length + 1}`, options.map((_, i) => `Value ${i + 1}`)]));
 
         continue;
       }
@@ -187,12 +196,13 @@ class Board {
           curRow[j] = _.isObject(curRow[j]) ? curRow[j] : `${curRow[j]}\n\n\n${labels.length},${optionNum}`;
         }
       });
-      labels.push(`Option ${labels.length}`);
+      labels.push(_.flatten([`Option ${labels.length + 1}`, options.map((_, i) => `Value ${i + 1}`)]));
 
       console.log(' -> curRow', fmt(curRow));
       rows.push(curRow);
     };
     console.log('rows', JSON.stringify(rows));
+    console.log('labels', labels);
   }
 }
 
