@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;">
+  <script defer src="./renderer.js"></script>
+  <link
+    href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900'
+    rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="./styles.css">
+  <title>MrKeebs QMK2VIA</title>
+</head>
+
+<body>
+  <h1>MrKeebs QMK to Via layout translator</h1>
+
+  <div id="main" class="panel">
+    <p>Select a QMK keyboard folder to translate</p>
+    <p><button id="picker">Choose Folder</button></p>
+  </div>
+
+  <div id="keyboard-data" class="hidden panel">
+    <div class="info">
+      <p>
+        <b>Manufacturer</b><br />
+        <span id="keyboard-manufacturer"></span>
+      </p>
+      <p>
+        <b>Keyboard</b><br />
+        <span id="keyboard-model"></span>
+      </p>
+      <p>
+        <b>Layouts</b>
+        <span id="keyboard-layouts"></span>
+      </p>
+    </div>
+
+    <p>
+      <button class="restart">Start Over</button>
+      <button id="convert">Generate VIA File</button>
+    </p>
+  </div>
+
+  <div id="success" class="hidden panel">
+    <div class="info">
+      <p>
+        Via file saved:<br />
+        <span id="via-file"></span>
+      </p>
+    </div>
+
+    <p><button class="restart">Start over</button></p>
+  </div>
+
+  <div id="error" class="hidden panel">
+    <p>An unhandled error ocurred:</p>
+    <pre><span id="error-message"></span></pre>
+    <p><button class="restart">Start over</button></p>
+  </div>
+</body>
+
+</html>

@@ -1,10 +1,11 @@
 const _ = require('lodash');
 const _diff = require('array-diff')();
-const PARSER_RE = /#define LAYOUT(?<name>[^\(]*?)?\(.*?\)[\s\n\\]+\{[\s\\]+(?<matrix>.*?)\}\n/gms;
 
+const Config = require('./Config');
+
+const PARSER_RE = /#define LAYOUT(?<name>[^\(]*?)?\(.*?\)[\s\n\\]+\{[\s\\]+(?<matrix>.*?)\}\n/gms;
 const fmti = v => _.isObject(v) ? JSON.stringify(v) : `"${v}"`;
 const fmt = arr => arr.map(fmti).join(',');
-
 const iskno = s => ['KC_NO', 'KNO'].includes(s);
 
 class Board {
@@ -13,22 +14,12 @@ class Board {
     this.debug = debug;
     this.header = header;
     this.info = this.parseInfo(info);
-    this.config = this.parseConfig(config);
+    this.config = new Config(config);
     this.transform();
   }
 
   log(...s) {
     if (this.debug) console.log(...s);
-  }
-
-  parseConfig(config) {
-    const rows = parseInt(/MATRIX_ROWS\s+(\d+)/.exec(config)[1], 10);
-    const cols = parseInt(/MATRIX_COLS\s+(\d+)/.exec(config)[1], 10);
-    const vendorId = /VENDOR_ID\s+([\dxa-zA-Z]+)/.exec(config)[1];
-    const productId = /PRODUCT_ID\s+([\dxa-zA-Z]+)/.exec(config)[1];
-    const manufacturer = /MANUFACTURER\s+(.*)(\/\/.*?)?/.exec(config)[1];
-    const product = /PRODUCT\s+(.*)(\/\/.*?)?/.exec(config)[1];
-    return { rows, cols, vendorId, productId, manufacturer, product };
   }
 
   parseInfo(infoStr) {

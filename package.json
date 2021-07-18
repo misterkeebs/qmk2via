@@ -1,21 +1,38 @@
 {
-  "name": "kle2qmk",
-  "version": "1.0.0",
+  "name": "qmk2via",
+  "version": "0.0.1",
+  "author": "MrKeebs <felipe.coury@gmail.com>",
   "main": "index.js",
   "license": "MIT",
+  "build": {
+    "appId": "mrkeebs.qmk2via",
+    "mac": {
+      "category": ""
+    },
+    "win": {
+      "target": "nsis"
+    }
+  },
   "dependencies": {
     "array-diff": "^0.0.1",
+    "electron-log": "^4.3.5",
+    "electron-unhandled": "^3.0.2",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "chai": "^4.3.4",
+    "electron": "^13.1.7",
+    "electron-builder": "^22.11.7",
+    "electron-reloader": "^1.2.1",
     "mocha": "^9.0.2",
     "nodemon": "^2.0.12"
   },
   "scripts": {
-    "start": "node .",
-    "dev": "nodemon .",
+    "start": "electron .",
+    "cli": "node cli.js",
     "test": "NODE_ENV=test DB_ENV=test mocha './test/**/*.spec.js'",
-    "test:watch": "NODE_ENV=test DB_ENV=test mocha -w './test/**/*.spec.js'"
+    "test:watch": "NODE_ENV=test DB_ENV=test mocha -w './test/**/*.spec.js'",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   }
 }

@@ -1,0 +1,26 @@
+body {
+  font-family: 'Roboto';
+  background: #485055 no-repeat top right url('./icon.png');
+  color: #fff;
+}
+
+h1 {
+  height: 60px;
+  margin-top: 35px;
+  font-weight: 300;
+}
+
+.hidden {
+  display: none;
+}
+
+a {
+  color: rgb(50,156,223);
+}
+
+pre, .info {
+  background: rgb(42, 43, 47);
+  border: 1px rgb(42, 43, 47);
+  border-radius: 10px;
+  padding: 10px 20px;
+}
