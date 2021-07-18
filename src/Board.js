@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const _diff = require('array-diff')();
-const PARSER_RE = /#define LAYOUT(?<name>.*?)\(.*?\)[\s\n\\]+\{[\s\\]+(?<matrix>.*?)\}\n/gms;
+const PARSER_RE = /#define LAYOUT(?<name>[^\(]*?)?\(.*?\)[\s\n\\]+\{[\s\\]+(?<matrix>.*?)\}\n/gms;
 
 const fmti = v => _.isObject(v) ? JSON.stringify(v) : `"${v}"`;
 const fmt = arr => arr.map(fmti).join(',');
@@ -8,45 +8,55 @@ const fmt = arr => arr.map(fmti).join(',');
 const iskno = s => ['KC_NO', 'KNO'].includes(s);
 
 class Board {
-  static parse(header, config, infoStr) {
-    const info = JSON.parse(infoStr);
-    let match = PARSER_RE.exec(header);
-    const layouts = {};
-    do {
-      const { name, matrix } = match.groups;
-      const parsedMatrix = matrix.trim().replace(/\{(.*?)\}\s*,*\s\\/gm, '$1').split('\n').map(s => s.trim().split(',').map(s => s.trim()).filter(s => !iskno(s)));
-      layouts[name.split('').splice(1).join('')] = {
-        matrix: parsedMatrix,
-      };
-    } while ((match = PARSER_RE.exec(header)) !== null);
-
-    return new Board(layouts, config, info);
-  }
-
-  constructor(layouts, config, info) {
-    this.layouts = layouts;
-    this.info = info;
+  constructor(header, config, info, debug) {
+    this.layouts = {};
+    this.debug = debug;
+    this.header = header;
+    this.info = this.parseInfo(info);
     this.config = this.parseConfig(config);
     this.transform();
   }
 
+  log(...s) {
+    if (this.debug) console.log(...s);
+  }
+
   parseConfig(config) {
-    const rows = parseInt(/MATRIX_ROWS\s*(\d+)/.exec(config)[1], 10);
-    const cols = parseInt(/MATRIX_COLS\s*(\d+)/.exec(config)[1], 10);
-    return { rows, cols };
+    const rows = parseInt(/MATRIX_ROWS\s+(\d+)/.exec(config)[1], 10);
+    const cols = parseInt(/MATRIX_COLS\s+(\d+)/.exec(config)[1], 10);
+    const vendorId = /VENDOR_ID\s+([\dxa-zA-Z]+)/.exec(config)[1];
+    const productId = /PRODUCT_ID\s+([\dxa-zA-Z]+)/.exec(config)[1];
+    const manufacturer = /MANUFACTURER\s+(.*)(\/\/.*?)?/.exec(config)[1];
+    const product = /PRODUCT\s+(.*)(\/\/.*?)?/.exec(config)[1];
+    return { rows, cols, vendorId, productId, manufacturer, product };
+  }
+
+  parseInfo(infoStr) {
+    const info = JSON.parse(infoStr);
+    let match = PARSER_RE.exec(this.header);
+    do {
+      const { name, matrix } = match.groups;
+      const parsedMatrix = matrix.trim().replace(/\{(.*?)\}\s*,*\s\\/gm, '$1').split('\n').map(s => s.trim().split(',').map(s => s.trim()).filter(s => !iskno(s)));
+      this.layouts[(name || '_main').split('').splice(1).join('')] = {
+        matrix: parsedMatrix,
+      };
+    } while ((match = PARSER_RE.exec(this.header)) !== null);
+    this.log('Layouts', this.layouts);
+    return info;
   }
 
   transform() {
     const { layouts } = this.info;
     _.forEach(layouts, (def, fullName) => {
       const { layout } = def;
-      const name = fullName.replace(/^LAYOUT_/, '');
+      const name = fullName === 'LAYOUT' ? 'main' : fullName.replace(/^LAYOUT_/, '');
+      this.log('Processing', name);
       const rows = [...Array(this.config.rows)].map(e => []);
 
       let col = 0;
       let row = 0;
       let cx = 0;
-      layout.forEach(({ x, y, w, label }) => {
+      layout.forEach(({ x, y, w, h, label }) => {
         if (row !== y) {
           row = y;
           col = 0;
@@ -54,12 +64,9 @@ class Board {
         };
         const pos = this.getMatrix(name)[row][col];
         const opts = {};
-        if (w) {
-          opts.w = w;
-        }
-        if (x > cx) {
-          opts.x = x - cx;
-        }
+        if (w) opts.w = w;
+        if (x > cx) opts.x = x - cx;
+        if (h) opts.h = h;
 
         if (Object.keys(opts).length) rows[row].push(opts);
 
@@ -91,16 +98,16 @@ class Board {
 
   findFirstDiff(row, baseLayoutName) {
     const baseRow = this.getVia(baseLayoutName)[row];
-    console.log(' **** BASE', baseRow.map(fmti).join(','));
+    this.log(' **** BASE', baseRow.map(fmti).join(','));
     let firstDiff = -1;
     _.forEach(this.layouts, (def, name) => {
       if (name === baseLayoutName) return;
       const thisRow = this.getVia(name)[row];
-      console.log(' **** ROW', row, '::', name, '::', thisRow.map(fmti).join(','));
+      this.log(' **** ROW', row, '::', name, '::', thisRow.map(fmti).join(','));
       const diffs = this.diff(baseRow, thisRow);
       const thisFirstDiff = diffs.findIndex(d => d[0] !== '=');
       if (thisFirstDiff === -1) return;
-      console.log(' **** ROW', row, '::', name, '::', thisFirstDiff, 'diffs', diffs);
+      this.log(' **** ROW', row, '::', name, '::', thisFirstDiff, 'diffs', diffs);
       firstDiff = firstDiff === -1 ? thisFirstDiff : Math.min(firstDiff, thisFirstDiff);
     });
     return firstDiff;
@@ -114,11 +121,11 @@ class Board {
       const options = [];
       const baseRow = fmt(base[i]);
 
-      console.log('-------------------- row', i);
-      console.log(' -> base', baseRow);
+      this.log('-------------------- row', i);
+      this.log(' -> base', baseRow);
 
       const firstDiff = this.findFirstDiff(i, baseLayoutName);
-      console.log(' -> firstDiff', firstDiff);
+      this.log(' -> firstDiff', firstDiff);
 
       // no differences
       if (firstDiff === -1) {
@@ -172,7 +179,7 @@ class Board {
       const toAdd = [];
       _.forEach(this.layouts, (def, name) => {
         const { via } = def;
-        console.log(' ->', name, 'row', fmt(via[i]));
+        this.log(' ->', name, 'row', fmt(via[i]));
         const arr = [];
         for (let j = firstDiff; j < via[i].length; j++) {
           arr.push(via[i][j]);
@@ -190,7 +197,7 @@ class Board {
         options.push([start, end]);
       });
 
-      console.log(' *** options', options);
+      this.log(' *** options', options);
       options.forEach(([start, end], optionNum) => {
         for (let j = start; j <= end; j++) {
           curRow[j] = _.isObject(curRow[j]) ? curRow[j] : `${curRow[j]}\n\n\n${labels.length},${optionNum}`;
@@ -198,11 +205,22 @@ class Board {
       });
       labels.push(_.flatten([`Option ${labels.length + 1}`, options.map((_, i) => `Value ${i + 1}`)]));
 
-      console.log(' -> curRow', fmt(curRow));
+      this.log(' -> curRow', fmt(curRow));
       rows.push(curRow);
     };
-    console.log('rows', JSON.stringify(rows));
-    console.log('labels', labels);
+    this.log('rows', JSON.stringify(rows));
+    this.log('labels', labels);
+    return JSON.stringify({
+      name: `${this.config.manufacturer} ${this.config.product}`,
+      productId: this.config.productId,
+      vendorId: this.config.vendorId,
+      ligntining: 'none',
+      matrix: { rows: this.config.rows, cols: this.config.cols },
+      layouts: {
+        labels: labels,
+        keymap: rows,
+      },
+    }, null, 2);
   }
 }
 
