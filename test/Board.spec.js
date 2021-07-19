@@ -93,4 +93,22 @@ describe('Board', async () => {
       expect(json.layouts.labels.length).to.eql(5);
     });
   });
+
+  describe('board with alternate matrix representation', async () => {
+    beforeEach(async () => {
+      const layouts = readFixture('wd60_d/wd60_d.h');
+      const info = readFixture('wd60_d/info.json');
+      const config = readFixture('wd60_d/config.h');
+      board = new Board(layouts, config, info);
+    });
+
+    it('reads as main layout', async () => {
+      expect(Object.keys(board.layouts)).to.eql(['all']);
+    });
+
+    it('generates the via file', async () => {
+      const json = JSON.parse(board.toVia());
+      expect(json.layouts.labels.length).to.eql(0);
+    });
+  });
 });

@@ -6,7 +6,7 @@ const Config = require('./Config');
 const PARSER_RE = /#define LAYOUT(?<name>[^\(]*?)?\(.*?\)[\s\n\\]+\{[\s\\]+(?<matrix>.*?)\}\n/gms;
 const fmti = v => _.isObject(v) ? JSON.stringify(v) : `"${v}"`;
 const fmt = arr => arr.map(fmti).join(',');
-const iskno = s => ['KC_NO', 'KNO'].includes(s);
+const iskno = s => ['KC_NO', 'KNO', '____'].includes(s);
 
 class Board {
   constructor(header, config, info, debug) {
@@ -54,14 +54,22 @@ class Board {
           cx = 0;
         };
         const pos = this.getMatrix(name)[row][col];
-        const opts = {};
-        if (w) opts.w = w;
-        if (x > cx) opts.x = x - cx;
-        if (h) opts.h = h;
+        if (pos) {
+          const opts = {};
+          if (w) opts.w = w;
+          if (x > cx) opts.x = x - cx;
+          if (h) opts.h = h;
 
-        if (Object.keys(opts).length) rows[row].push(opts);
+          if (Object.keys(opts).length) rows[row].push(opts);
 
-        rows[row].push(`${parseInt(pos.charAt(1), 16)},${parseInt(pos.charAt(2), 16)}`);
+          if (pos.length === 3) {
+            rows[row].push(`${parseInt(pos.charAt(1))},${parseInt(pos.charAt(2), 16)}`);
+          } else if (pos.length === 4) {
+            rows[row].push(`${parseInt(pos.charAt(1), 16)},${parseInt(pos.slice(2))}`);
+          } else {
+            throw new Error(`Unknown position format ${pos}`);
+          }
+        }
         col++;
         cx += (w || 1) + x - cx;
       });
