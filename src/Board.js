@@ -48,12 +48,16 @@ class Board {
       let col = 0;
       let row = 0;
       let cx = 0;
+      let exprow = 0;
+      let crow = -1;
       layout.forEach(({ x, y, w, h, label }) => {
         if (row !== y) {
           row = y;
           col = 0;
           cx = 0;
+          exprow++;
         };
+        // console.log(`${crow} -- ${row}:${col}:${x}:${y}:${w}:${h}:${label}`);
         const rowPos = yValues.indexOf(row);
         const pos = this.getMatrix(name)[rowPos][col];
         if (pos) {
@@ -61,6 +65,11 @@ class Board {
           if (w) opts.w = w;
           if (x > cx) opts.x = x - cx;
           if (h) opts.h = h;
+          if (exprow !== row && crow !== exprow) {
+            crow = exprow;
+            opts.y = (row - exprow);
+            exprow += (row - exprow);
+          }
 
           if (Object.keys(opts).length) rows[rowPos].push(opts);
 

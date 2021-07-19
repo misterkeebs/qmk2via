@@ -125,9 +125,11 @@ describe('Board', async () => {
       expect(Object.keys(board.layouts)).to.eql(['main']);
     });
 
-    it('generates the via file', async () => {
+    it('keeps the y offsets', async () => {
       const json = JSON.parse(board.toVia());
-      expect(json.layouts.labels.length).to.eql(0);
+      expect(json.layouts.keymap[1][0].y).to.eql(0.5);
+      expect(json.layouts.keymap[1][1].y).to.be.undefined;
+      expect(json.layouts.keymap[2][0].y).to.be.undefined;
     });
   });
 });
