@@ -111,4 +111,23 @@ describe('Board', async () => {
       expect(json.layouts.labels.length).to.eql(0);
     });
   });
+
+
+  describe('board with non standard y positions', async () => {
+    beforeEach(async () => {
+      const layouts = readFixture('cstpad/cstpad.h');
+      const info = readFixture('cstpad/info.json');
+      const config = readFixture('cstpad/config.h');
+      board = new Board(layouts, config, info);
+    });
+
+    it('reads as main layout', async () => {
+      expect(Object.keys(board.layouts)).to.eql(['main']);
+    });
+
+    it('generates the via file', async () => {
+      const json = JSON.parse(board.toVia());
+      expect(json.layouts.labels.length).to.eql(0);
+    });
+  });
 });

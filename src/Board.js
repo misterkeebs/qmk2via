@@ -3,7 +3,7 @@ const _diff = require('array-diff')();
 
 const Config = require('./Config');
 
-const PARSER_RE = /#define LAYOUT(?<name>[^\(]*?)?\(.*?\)[\s\n\\]+\{[\s\\]+(?<matrix>.*?)\}\n/gms;
+const PARSER_RE = /#define LAYOUT(?<name>[^\(]*?)?\(.*?\)[\s\n\\]+\{[\s\\]+(?<matrix>.*?)\}\n*$/gms;
 const fmti = v => _.isObject(v) ? JSON.stringify(v) : `"${v}"`;
 const fmt = arr => arr.map(fmti).join(',');
 const iskno = s => ['KC_NO', 'KNO', '____'].includes(s);
@@ -27,7 +27,7 @@ class Board {
     let match = PARSER_RE.exec(this.header);
     do {
       const { name, matrix } = match.groups;
-      const parsedMatrix = matrix.trim().replace(/\{(.*?)\}\s*,*\s\\/gm, '$1').split('\n').map(s => s.trim().split(',').map(s => s.trim()).filter(s => !iskno(s)));
+      const parsedMatrix = matrix.trim().replace(/\{(.*?)\}\s*,*\s*\\/gm, '$1').split('\n').map(s => s.trim().split(',').map(s => s.trim()).filter(s => !iskno(s)));
       this.layouts[(name || '_main').split('').splice(1).join('')] = {
         matrix: parsedMatrix,
       };
@@ -43,6 +43,7 @@ class Board {
       const name = fullName === 'LAYOUT' ? 'main' : fullName.replace(/^LAYOUT_/, '');
       this.log('Processing', name);
       const rows = [...Array(this.config.rows)].map(e => []);
+      const yValues = _(layout).map(l => l.y).uniq().sort().value();
 
       let col = 0;
       let row = 0;
@@ -53,19 +54,20 @@ class Board {
           col = 0;
           cx = 0;
         };
-        const pos = this.getMatrix(name)[row][col];
+        const rowPos = yValues.indexOf(row);
+        const pos = this.getMatrix(name)[rowPos][col];
         if (pos) {
           const opts = {};
           if (w) opts.w = w;
           if (x > cx) opts.x = x - cx;
           if (h) opts.h = h;
 
-          if (Object.keys(opts).length) rows[row].push(opts);
+          if (Object.keys(opts).length) rows[rowPos].push(opts);
 
           if (pos.length === 3) {
-            rows[row].push(`${parseInt(pos.charAt(1))},${parseInt(pos.charAt(2), 16)}`);
+            rows[rowPos].push(`${parseInt(pos.charAt(1))},${parseInt(pos.charAt(2), 16)}`);
           } else if (pos.length === 4) {
-            rows[row].push(`${parseInt(pos.charAt(1), 16)},${parseInt(pos.slice(2))}`);
+            rows[rowPos].push(`${parseInt(pos.charAt(1), 16)},${parseInt(pos.slice(2))}`);
           } else {
             throw new Error(`Unknown position format ${pos}`);
           }
