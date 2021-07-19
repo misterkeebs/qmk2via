@@ -71,7 +71,6 @@ ipcMain.on('select-keyboard', async (event, arg) => {
 
   try {
     const [mainPath] = result.filePaths;
-    console.log('opening', mainPath);
     name = mainPath.split(path.sep).pop();
     const header = tryAndRead(`${mainPath}/${name}.h`);
     const config = tryAndRead(`${mainPath}/config.h`);
