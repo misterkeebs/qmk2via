@@ -30,6 +30,13 @@ describe('Layout', async () => {
       expect(row[0].label).to.eql(`~`);
       expect(row[14].label).to.eql(`Backspace`);
     });
+
+    it('renders', async () => {
+      const s = layout.toString();
+      const exp = `
+      `;
+      expect(s).to.eql(exp);
+    });
   });
 
   describe('with a non-linear matrix', async () => {

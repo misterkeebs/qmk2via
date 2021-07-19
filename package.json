@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "array-diff": "^0.0.1",
+    "dedent-js": "^1.0.1",
     "electron-log": "^4.3.5",
     "electron-unhandled": "^3.0.2",
     "lodash": "^4.17.21"
