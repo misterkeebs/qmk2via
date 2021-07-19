@@ -6,6 +6,9 @@
   "license": "MIT",
   "build": {
     "appId": "mrkeebs.qmk2via",
+    "directories": {
+      "buildResources": "resources"
+    },
     "mac": {
       "category": ""
     },
