@@ -41,10 +41,16 @@ const { ipcRenderer, shell } = require('electron');
     show(`#${id}`);
   };
 
-  ipcRenderer.on('error', (evt, err) => {
-    console.error(err);
-    console.error(err.stack);
-    $('#error-message').innerText = `${err.stack}`;
+  ipcRenderer.on('error', (evt, { message, error }) => {
+    console.log('message, error', message, error);
+    $('#error-message').innerText = message || 'An unexpected error ocurred:';
+    if (error) {
+      console.error(error);
+      $('#error-details').innerText = `${error.stack}`;
+      show('#error-details');
+    } else {
+      hide('#error-details');
+    }
     showOnly('error');
   });
 

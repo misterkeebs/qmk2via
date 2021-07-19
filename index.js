@@ -59,12 +59,23 @@ ipcMain.on('select-keyboard', async (event, arg) => {
   });
   if (result.canceled) return;
 
+  class MissingRequiredFileError extends Error { }
+
+  const tryAndRead = (file, error) => {
+    if (!fs.existsSync(file)) {
+      const expected = path.basename(file);
+      throw new MissingRequiredFileError(`Directory doesn't seem to have a valid QMK keyboard definition. Required file missing: ${expected}.`);
+    }
+    return fs.readFileSync(file, 'utf8');
+  }
+
   try {
     const [mainPath] = result.filePaths;
+    console.log('opening', mainPath);
     name = mainPath.split(path.sep).pop();
-    const header = fs.readFileSync(`${mainPath}/${name}.h`, 'utf8');
-    const config = fs.readFileSync(`${mainPath}/config.h`, 'utf8');
-    const info = fs.readFileSync(`${mainPath}/info.json`, 'utf8');
+    const header = tryAndRead(`${mainPath}/${name}.h`);
+    const config = tryAndRead(`${mainPath}/config.h`);
+    const info = tryAndRead(`${mainPath}/info.json`);
     console.log('before board');
     board = new Board(header, config, info);
     console.log('after board');
@@ -72,9 +83,15 @@ ipcMain.on('select-keyboard', async (event, arg) => {
       config: board.config,
       layouts: Object.keys(board.layouts),
     });
-  } catch (err) {
-    console.error(err);
-    event.reply('error', err);
+  } catch (error) {
+    console.error(error);
+    if (error instanceof MissingRequiredFileError) {
+      console.log('sending', { message: error.message });
+      event.reply('error', { message: error.message });
+    } else {
+      console.log('sending', { error });
+      event.reply('error', { error });
+    }
   }
 });
 
