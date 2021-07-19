@@ -59,32 +59,32 @@ describe('Board', async () => {
     });
 
     it('reads as main layout', async () => {
-      expect(Object.keys(board.layouts)).to.eql([
-        'main',
-        '60_ansi_arrow',
-        'true_hhkb',
-        '60_hhkb',
-        '60_ansi_split_bs_rshift',
-        'directional',
-        'all',
-        '60_ansi',
-        '60_ansi_split',
-        '60_ansi_split_space_rshift',
-        '60_iso',
+      expect(Object.keys(board.layouts)).to.include.members([
+        '60_2_function',
         '60_abnt2',
-        '60_iso_5x1u',
-        '60_iso_5x1u_split_rshift',
-        '60_iso_split',
+        '60_ansi_arrow',
+        '60_ansi_split_bs_rshift',
+        '60_ansi_split_space_rshift',
+        '60_ansi_split',
+        '60_ansi',
         '60_b_ansi',
         '60_b_iso',
-        '60_tsangan',
-        '60_tsangan_hhkb',
         '60_calbatr0ss',
-        '60_iso_split_space_bs_rshift',
-        '60_2_function',
-        '60_iso_5x1u_split_bs_rshift_spc',
-        'olivierko',
+        '60_hhkb',
         '60_iso_4th_row_all_1u',
+        '60_iso_5x1u_split_bs_rshift_spc',
+        '60_iso_5x1u_split_rshift',
+        '60_iso_5x1u',
+        '60_iso_split_space_bs_rshift',
+        '60_iso_split',
+        '60_iso',
+        '60_tsangan_hhkb',
+        '60_tsangan',
+        'all',
+        'directional',
+        'main',
+        'olivierko',
+        'true_hhkb',
       ]);
     });
 
@@ -106,9 +106,18 @@ describe('Board', async () => {
       expect(Object.keys(board.layouts)).to.eql(['all']);
     });
 
+    it('generates the layout', async () => {
+      const layout = board.getLayout('all');
+      const key = layout.keyAt(0, 14);
+      expect(key.label).to.eql('');
+      expect(key.x).to.eql(14);
+      expect(key.y).to.eql(0);
+    });
+
     it('generates the via file', async () => {
       const json = JSON.parse(board.toVia());
       expect(json.layouts.labels.length).to.eql(0);
+      console.log('board.toVia()', JSON.stringify(json));
     });
   });
 

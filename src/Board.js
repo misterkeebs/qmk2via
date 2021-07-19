@@ -2,6 +2,10 @@ const _ = require('lodash');
 const _diff = require('array-diff')();
 
 const Config = require('./Config');
+const Header = require('./Header');
+const Info = require('./Info');
+const Layout = require('./Layout');
+const { getLayoutName } = require('./Utils');
 
 const PARSER_RE = /#define LAYOUT(?<name>[^\(]*?)?\(.*?\)[\s\n\\]+\{[\s\\]+(?<matrix>.*?)\}\n*$/gms;
 const fmti = v => _.isObject(v) ? JSON.stringify(v) : `"${v}"`;
@@ -12,94 +16,25 @@ class Board {
   constructor(header, config, info, debug) {
     this.layouts = {};
     this.debug = debug;
-    this.header = header;
-    this.info = this.parseInfo(info);
+    this.header = new Header(header);
     this.config = new Config(config);
-    this.transform();
+    this.info = new Info(info);
+    this.layouts = this.makeLayouts();
   }
 
   log(...s) {
     if (this.debug) console.log(...s);
   }
 
-  parseInfo(infoStr) {
-    const info = JSON.parse(infoStr);
-    let match = PARSER_RE.exec(this.header);
-    do {
-      const { name, matrix } = match.groups;
-      const parsedMatrix = matrix.trim().replace(/\{(.*?)\}\s*,*\s*\\/gm, '$1').split('\n').map(s => s.trim().split(',').map(s => s.trim()).filter(s => !iskno(s)));
-      this.layouts[(name || '_main').split('').splice(1).join('')] = {
-        matrix: parsedMatrix,
-      };
-    } while ((match = PARSER_RE.exec(this.header)) !== null);
-    this.log('Layouts', this.layouts);
-    return info;
-  }
-
-  transform() {
-    const { layouts } = this.info;
-    _.forEach(layouts, (def, fullName) => {
-      const { layout } = def;
-      const name = fullName === 'LAYOUT' ? 'main' : fullName.replace(/^LAYOUT_/, '');
-      this.log('Processing', name);
-      const rows = [...Array(this.config.rows)].map(e => []);
-      const yValues = _(layout).map(l => l.y).uniq().sort().value();
-
-      let col = 0;
-      let row = 0;
-      let cx = 0;
-      let exprow = 0;
-      let crow = -1;
-      layout.forEach(({ x, y, w, h, label }) => {
-        if (row !== y) {
-          row = y;
-          col = 0;
-          cx = 0;
-          exprow++;
-        };
-        // console.log(`${crow} -- ${row}:${col}:${x}:${y}:${w}:${h}:${label}`);
-        const rowPos = yValues.indexOf(row);
-        const pos = this.getMatrix(name)[rowPos][col];
-        if (pos) {
-          const opts = {};
-          if (w) opts.w = w;
-          if (x > cx) opts.x = x - cx;
-          if (h) opts.h = h;
-          if (exprow !== row && crow !== exprow) {
-            crow = exprow;
-            opts.y = (row - exprow);
-            exprow += (row - exprow);
-          }
-
-          if (Object.keys(opts).length) rows[rowPos].push(opts);
-
-          if (pos.length === 3) {
-            rows[rowPos].push(`${parseInt(pos.charAt(1))},${parseInt(pos.charAt(2), 16)}`);
-          } else if (pos.length === 4) {
-            rows[rowPos].push(`${parseInt(pos.charAt(1), 16)},${parseInt(pos.slice(2))}`);
-          } else {
-            throw new Error(`Unknown position format ${pos}`);
-          }
-        }
-        col++;
-        cx += (w || 1) + x - cx;
-      });
-      this.layouts[name].via = rows;
-    });
-
-    this.layouts = _.pickBy(this.layouts, def => !!def.via);
-  }
-
-  getLayout(name) {
-    return this.layouts[name];
-  }
-
-  getMatrix(name) {
-    return this.getLayout(name).matrix;
-  }
-
-  getVia(name) {
-    return this.getLayout(name).via;
+  makeLayouts() {
+    return Object.keys(this.info.layouts).reduce((obj, layoutName) => {
+      const name = getLayoutName(layoutName);
+      const layout = this.info.layouts[layoutName].layout;
+      const { rows, cols } = this.config;
+      const matrix = this.header.matrices[name];
+      obj[name] = new Layout(name, rows, cols, matrix, layout);
+      return obj;
+    }, {});
   }
 
   diff(row1, row2) {
