@@ -9,7 +9,10 @@ class Key {
     this.h = 1;
   }
 
-  toString() {
+  toString(format = 'render') {
+    if (format === 'json') {
+      return JSON.stringify(this);
+    }
     const res = [];
     const width = (this.w * Key.XFACT) - 2;
     const height = (this.h * Key.YFACT) - 2;

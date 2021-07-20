@@ -15,6 +15,11 @@ class Via {
     if (layout) return layout.getRow(row);
   }
 
+  diff(row1, row2) {
+    const json = [row1, row2].map(r => r.map(k => k.toString('json')));
+    return diff(json[0], json[1]);
+  }
+
   toString() {
     const layoutNames = Object.keys(this.layouts);
     const baseLayout = this.layouts[this.mainLayout];
@@ -23,8 +28,8 @@ class Via {
       layoutNames.forEach(name => {
         if (name === baseLayout) return;
         const row = this.getLayoutRow(name, i);
-        const rowDiff = diff(baseRow, row);
-        // console.log('rowDiff', rowDiff);
+        const rowDiff = this.diff(baseRow, row);
+        console.log('row', i, name, rowDiff.map(r => r[0]).join(''));
       });
     }
   }
