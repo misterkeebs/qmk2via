@@ -24,7 +24,7 @@ class Via {
         if (name === baseLayout) return;
         const row = this.getLayoutRow(name, i);
         const rowDiff = diff(baseRow, row);
-        console.log('rowDiff', rowDiff);
+        // console.log('rowDiff', rowDiff);
       });
     }
   }

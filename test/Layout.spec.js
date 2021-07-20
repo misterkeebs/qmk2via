@@ -10,32 +10,24 @@ describe('Layout', async () => {
     beforeEach(async () => {
       const header = new Header(readFixture('an_c/an_c.h'));
       const info = JSON.parse(readFixture('an_c/info.json'));
-      const matrix = header.matrices.all;
-      layout = new Layout('all', 5, 14, matrix, info.layouts.LAYOUT_60_ansi.layout);
+      const matrix = header.matrices['60_ansi'];
+      layout = new Layout('ansi', 5, 14, matrix, info.layouts.LAYOUT_60_ansi.layout);
     });
 
     it('sets the layout keys', async () => {
-      console.log('layout.keys', layout.keys);
       expect(layout.keys[13].row).to.equal(0);
       expect(layout.keys[13].x).to.equal(13);
       expect(layout.keys[13].y).to.equal(0);
-      expect(layout.keys[14].row).to.equal(2);
-      expect(layout.keys[14].x).to.equal(14);
-      expect(layout.keys[14].y).to.equal(0);
+      expect(layout.keys[14].row).to.equal(1);
+      expect(layout.keys[14].x).to.equal(0);
+      expect(layout.keys[14].y).to.equal(1);
     });
 
     it('returns a row', async () => {
       const row = layout.getRow(0);
-      expect(row.length).to.eql(15);
+      expect(row.length).to.eql(14);
       expect(row[0].label).to.eql(`~`);
-      expect(row[14].label).to.eql(`Backspace`);
-    });
-
-    it('renders', async () => {
-      const s = layout.toString();
-      const exp = `
-      `;
-      expect(s).to.eql(exp);
+      expect(row[13].label).to.eql(`Backspace`);
     });
   });
 
@@ -59,15 +51,24 @@ describe('Layout', async () => {
     });
 
     it('generates KLE string', async () => {
-      console.log('layout.toKle()', layout.toKle());
       const rows = JSON.parse(`[${layout.toKle()}]`);
-      expect(rows[1][0]).to.eql({ y: 0.5 });
+      expect(rows[3][14]).to.eql('Shift');
     });
 
     it('generates KLE string with matrix info', async () => {
-      console.log('layout.toKle()', layout.toKle('matrix'));
       const rows = JSON.parse(`[${layout.toKle('matrix')}]`);
       expect(rows[1][2]).to.eql('1,1');
+    });
+  });
+
+  describe('with complex layout', async () => {
+    let layout;
+
+    beforeEach(async () => {
+      const header = new Header(readFixture('hb85/hb85.h'));
+      const info = JSON.parse(readFixture('hb85/info.json'));
+      const matrix = header.matrices.stt;
+      layout = new Layout('stt', 8, 4, matrix, info.layouts.LAYOUT_stt.layout);
     });
   });
 

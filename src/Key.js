@@ -1,7 +1,7 @@
-const WFACT = 8;
-const HFACT = 4;
-
 class Key {
+  static XFACT = 8;
+  static YFACT = 4;
+
   constructor(row, col) {
     this.row = row;
     this.col = col;
@@ -11,8 +11,8 @@ class Key {
 
   toString() {
     const res = [];
-    const width = (this.w * WFACT) - 2;
-    const height = (this.h * HFACT) - 2;
+    const width = (this.w * Key.XFACT) - 2;
+    const height = (this.h * Key.YFACT) - 2;
     res.push('┌' + Array(width + 1).join('─') + '┐');
     for (let i = 0; i < height; i++) {
       res.push('│' + Array(width + 1).join(' ') + '│');
