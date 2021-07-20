@@ -4,7 +4,7 @@ const { loadBoard } = require('./utils');
 
 describe.only('Via', async () => {
   it('does something', async () => {
-    const board = loadBoard('an_c');
+    const board = loadBoard('db60');
     const via = new Via(board);
     console.log('via.toString()', via.toString());
   });

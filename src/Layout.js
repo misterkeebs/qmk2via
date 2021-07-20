@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const Key = require('./Key');
+const Kle = require('./Kle');
 
 class Layout {
   constructor(name, rows, cols, matrix, layout) {
@@ -18,7 +19,7 @@ class Layout {
   }
 
   getRow(n) {
-    return _.sortBy(this.keys.filter(key => key.row === n), 'x');
+    return _.sortBy(this.keys.filter(key => key.y === this.yValues[n]), 'x');
   }
 
   toString() {
@@ -75,8 +76,8 @@ class Layout {
   }
 
   process() {
-    const yValues = _(this.layout).map(l => l.y).uniq().sort().value();
-    const rows = [...Array(yValues.length)].map(e => []);
+    this.yValues = _(this.layout).map(l => l.y).uniq().sort().value();
+    const rows = [...Array(this.yValues.length)].map(e => []);
     const layout = _.sortBy(this.layout, ['y', 'x']);
 
     let cy = 0;
@@ -86,7 +87,7 @@ class Layout {
       if (key.y > cy) {
         cy = key.y;
         ccol = 0;
-        crow = yValues[cy];
+        crow = this.yValues[cy];
       }
       const matrixKey = this.keys[i];
       matrixKey.set({
@@ -101,33 +102,7 @@ class Layout {
   }
 
   toKle(label) {
-    const rows = [];
-    const crow = [];
-    let cx = 0;
-    let cy = 0;
-    let opts;
-
-    _.sortBy(this.keys, ['y', 'x']).forEach(key => {
-      opts = {};
-      if (key.y > cy) {
-        rows.push(_.clone(crow));
-        crow.length = 0;
-        cy += 1;
-        if (key.y > cy) {
-          opts.y = key.y - cy;
-          cy = key.y;
-        }
-      }
-      if (key.w > 1) opts.w = key.w;
-      if (key.h > 1) opts.h = key.h;
-      if (Object.keys(opts).length) {
-        crow.push(opts);
-        opts = {};
-      }
-      crow.push(label === 'matrix' ? `${key.row},${key.col}` : key.label);
-    });
-    rows.push(crow);
-    return JSON.stringify(rows).replace(/^\[/g, '').replace(/\]$/g, '');
+    new Kle(this.keys).toKle(label);
   }
 }
 

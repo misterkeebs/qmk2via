@@ -31,6 +31,22 @@ describe('Layout', async () => {
     });
   });
 
+  describe('with 60 layout', async () => {
+    let layout;
+
+    beforeEach(async () => {
+      const header = new Header(readFixture('db60/db60.h'));
+      const info = JSON.parse(readFixture('db60/info.json'));
+      const matrix = header.matrices['60_tsangan_hhkb'];
+      layout = new Layout('tsangan60__hhkb', 5, 14, matrix, info.layouts.LAYOUT_60_tsangan_hhkb.layout);
+    });
+
+    it('returns the row', async () => {
+      const row = layout.getRow(2);
+      expect(row.pop().label).to.eql('Enter');
+    });
+  });
+
   describe('with a non-linear matrix', async () => {
     let layout;
 
@@ -39,6 +55,11 @@ describe('Layout', async () => {
       const info = JSON.parse(readFixture('wd60_d/info.json'));
       const matrix = header.matrices.all;
       layout = new Layout('all', 5, 14, matrix, info.layouts.LAYOUT_all.layout);
+    });
+
+    it('returns the row', async () => {
+      const row = layout.getRow(0);
+      expect(row.length).to.eql(15);
     });
 
     it('sets the layout keys', async () => {

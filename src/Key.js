@@ -1,6 +1,14 @@
+const _ = require('lodash');
+
 class Key {
   static XFACT = 8;
   static YFACT = 4;
+
+  static build(opts) {
+    const key = new Key(opts.row, opts.col);
+    _.forEach(opts, (v, k) => key[k] = v);
+    return key;
+  }
 
   constructor(row, col) {
     this.row = row;
@@ -11,7 +19,8 @@ class Key {
 
   toString(format = 'render') {
     if (format === 'json') {
-      return JSON.stringify(this);
+      const { row, col, h, w, x, y } = this;
+      return JSON.stringify({ row, col, h, w, x, y });
     }
     const res = [];
     const width = (this.w * Key.XFACT) - 2;
