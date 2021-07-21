@@ -4,6 +4,22 @@ const Kle = require('./Kle');
 
 const { getLayoutName } = require('./Utils');
 
+// 1. Go through all rows
+// 2. Classify them rows changes in start, end, both or total
+// 3. Go through the changes in start and see what's the max X offset we need
+// 4. Iterate through the rows
+// 5. For each row, find the max X offset and apply it to the row
+//   5.1. When diff is total
+//     5.1.1. If last row, add 0.5u to current Y
+//     5.1.2. Add base row
+//     5.1.3. Add all the different rows
+//   5.2. When diff is start
+//     5.2.1. Iterate through all the different starts, adding them with a 0.25u offset between them
+//   5.3. When diff is start and end
+//     5.3.1. Add the base row part that's common between all different rows
+//   5.3. When diff is end
+//     5.3.1. Iterate through all the different ends, adding them with a 0.25u offset between them
+
 class Via {
   constructor(board, mainLayout) {
     this.board = board;
@@ -29,9 +45,11 @@ class Via {
     console.log('baseLayout', this.mainLayout);
     const diffs = [];
 
+
     const pushKeys = toAdd => {
       toAdd.forEach(key => {
         const modKey = _.clone(key);
+        console.log('modKey', modKey.label, modKey.y, modKey.y + cy);
         modKey.y += cy;
         keys.push(modKey);
       });
@@ -78,9 +96,6 @@ class Via {
       if (types.includes('right')) {
         pushKeys(baseRow.slice(0, first + 1));
       }
-      if (types.includes('left')) {
-        pushKeys(baseRow.slice(first + 1));
-      }
       rowDiffs.forEach(diff => {
         console.log(i, types, 'baselen rowlen first total',
           baseRow.length, diff.row.length, diff.first, diff.total);
@@ -99,8 +114,9 @@ class Via {
           let cx = lastKey.x + lastKey.w + 0.5;
           console.log(i, 'lastKey', lastKey, cx);
           const toAdd = diff.row.slice(diff.first, diff.row.length).map(key => {
+            console.log('right', cy, key);
             const modKey = _.clone(key);
-            modKey.y = cy;
+            modKey.y += cy;
             modKey.x = cx;
             cx += modKey.w;
             return modKey;
@@ -119,7 +135,7 @@ class Via {
     }
     // console.log('keys', keys);
     // console.log('diffs', diffs);
-    console.log('Kle.toKle(keys)', new Kle(keys).toKle());
+    console.log(new Kle(keys).toKle());
   }
 }
 

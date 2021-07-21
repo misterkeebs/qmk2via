@@ -11,7 +11,7 @@ describe('Kle', async () => {
     ];
     const kle = new Kle(keys);
     const layout = kle.asJson();
-    expect(layout[0][0]).to.eql({ x: 13, w: 2 });
+    expect(layout[0][0]).to.include({ x: 13, w: 2 });
     expect(layout[0][2]).to.eql({ x: 0.5 });
     expect(layout[0][4]).to.eql('B');
   });

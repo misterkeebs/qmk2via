@@ -8,6 +8,7 @@ class Kle {
   asJson(label) {
     const rows = [];
     const crow = [];
+    let cc = null;
     let cx = 0;
     let cy = 0;
     let opts = {};
@@ -26,6 +27,10 @@ class Kle {
       if (key.w > 1) opts.w = key.w;
       if (key.h > 1) opts.h = key.h;
       if (key.x !== cx) opts.x = key.x - cx;
+      if (key.c !== cc) {
+        opts.c = key.c;
+        cc = key.c;
+      }
 
       if (opts.x) {
         cx += opts.x;
@@ -43,7 +48,7 @@ class Kle {
   }
 
   toKle(label) {
-    return JSON.stringify(this.asJson(this.keys, label))
+    return JSON.stringify(this.asJson(label))
       .replace(/\],/g, '],\n')
       .replace(/^\[/g, '')
       .replace(/\]$/g, '');

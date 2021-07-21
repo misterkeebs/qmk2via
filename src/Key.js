@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const hash = require('object-hash');
 
 class Key {
   static XFACT = 8;
@@ -15,6 +16,7 @@ class Key {
     this.col = col;
     this.w = 1;
     this.h = 1;
+    this.c = '#cccccc';
   }
 
   toString(format = 'render') {
@@ -31,6 +33,24 @@ class Key {
     }
     res.push('└' + Array(width + 1).join('─') + '┘');
     return res.join('\n');
+  }
+
+  toJSON() {
+    return {
+      row: this.row,
+      col: this.col,
+      h: this.h,
+      w: this.w,
+      x: this.x,
+      y: this.y,
+      c: this.c,
+    };
+  }
+
+  hashCode() {
+    const json = this.toJSON();
+    delete json.c;
+    return hash(json);
   }
 
   set(props) {

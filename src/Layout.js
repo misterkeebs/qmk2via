@@ -102,7 +102,7 @@ class Layout {
   }
 
   toKle(label) {
-    new Kle(this.keys).toKle(label);
+    return new Kle(this.keys).toKle(label);
   }
 }
 
