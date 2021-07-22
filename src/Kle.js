@@ -41,7 +41,16 @@ class Kle {
         crow.push(opts);
         opts = {};
       }
-      crow.push(label === 'matrix' ? `${key.row},${key.col}` : key.label);
+
+      let str = key.label;
+      if (label === 'matrix') {
+        str = `${key.row},${key.col}`;
+        const parts = key.label.split('\n\n\n');
+        if (parts.length > 0 && parts[1]) {
+          str = `${str}\n\n\n${parts[1]}`;
+        }
+      }
+      crow.push(str);
     });
     rows.push(crow);
     return rows;

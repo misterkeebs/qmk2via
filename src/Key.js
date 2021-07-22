@@ -19,6 +19,10 @@ class Key {
     this.c = '#cccccc';
   }
 
+  get coord() {
+    return `${this.row},${this.col}`;
+  }
+
   toString(format = 'render') {
     if (format === 'json') {
       const { row, col, h, w, x, y } = this;

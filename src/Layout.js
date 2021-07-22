@@ -18,8 +18,41 @@ class Layout {
     return this.keys[pos];
   }
 
+  get rowCount() {
+    return this.yValues.length;
+  }
+
   getRow(n) {
     return _.sortBy(this.keys.filter(key => key.y === this.yValues[n]), 'x');
+  }
+
+  forEachRow(fn) {
+    for (let i = 0; i < this.rowCount; i++) {
+      fn(this.getRow(i), i);
+    }
+  }
+
+  map(fn) {
+    const res = [];
+    this.forEachRow((row, i) => res.push(fn(row, i)));
+    return res;
+  }
+
+  [Symbol.iterator]() {
+    // Use a new index for each iterator. This makes multiple
+    // iterations over the iterable safe for non-trivial cases,
+    // such as use of break or nested looping over the same iterable.
+    let index = 0;
+
+    return {
+      next: () => {
+        if (index < this.rowCount) {
+          return { value: this.getRow(index++), done: false }
+        } else {
+          return { done: true }
+        }
+      }
+    }
   }
 
   toString() {

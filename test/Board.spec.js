@@ -6,6 +6,21 @@ const Board = require('../src/Board');
 describe('Board', async () => {
   let board;
 
+  describe('board with different bottom rows', async () => {
+    beforeEach(async () => {
+      const layouts = readFixture('tmo50/tmo50.h');
+      const info = readFixture('tmo50/info.json');
+      const config = readFixture('tmo50/config.h');
+      board = new Board(layouts, config, info);
+    });
+
+    it('generates the via file', async () => {
+      const json = JSON.parse(board.toVia());
+      expect(json.layouts.keymap[3][5]).to.eql({ w: 2.25, c: '#E0BBE4' });
+      expect(json.layouts.keymap[3][15]).to.eql('3,10\n\n\n0,1');
+    });
+  });
+
   describe('board with multiple layouts', async () => {
     beforeEach(async () => {
       const layouts = readFixture('signature65/signature65.h');
@@ -23,7 +38,7 @@ describe('Board', async () => {
       ]);
     });
 
-    describex('resulting VIA json', async () => {
+    describe('resulting VIA json', async () => {
       let json;
       beforeEach(async () => {
         json = JSON.parse(board.toVia());
@@ -34,7 +49,6 @@ describe('Board', async () => {
       it('has vendor id', () => expect(json.vendorId).to.eql('0x0159'));
       it('has matrix', () => expect(json.matrix).to.eql({ rows: 5, cols: 16 }));
     });
-
   });
 
   describe('board with single unnamed layout', async () => {
@@ -114,10 +128,9 @@ describe('Board', async () => {
       expect(key.y).to.eql(0);
     });
 
-    itx('generates the via file', async () => {
+    it('generates the via file', async () => {
       const json = JSON.parse(board.toVia());
       expect(json.layouts.labels.length).to.eql(0);
-      console.log('board.toVia()', JSON.stringify(json));
     });
   });
 
@@ -134,7 +147,7 @@ describe('Board', async () => {
       expect(Object.keys(board.layouts)).to.eql(['main']);
     });
 
-    itx('keeps the y offsets', async () => {
+    it('keeps the y offsets', async () => {
       const json = JSON.parse(board.toVia());
       expect(json.layouts.keymap[1][0].y).to.eql(0.5);
       expect(json.layouts.keymap[1][1].y).to.be.undefined;
