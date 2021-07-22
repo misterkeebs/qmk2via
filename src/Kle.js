@@ -31,6 +31,11 @@ class Kle {
         opts.c = key.c;
         cc = key.c;
       }
+      if (key.h === 2 && key.w === 1.25) {
+        opts.w2 = 1.5;
+        opts.h2 = 1;
+        opts.x2 = -0.25;
+      }
 
       if (opts.x) {
         cx += opts.x;

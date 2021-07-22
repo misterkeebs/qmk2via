@@ -23,7 +23,7 @@ describe('Kle', async () => {
     ];
     const kle = new Kle(keys);
     const layout = kle.asJson();
-    expect(layout[1][2]).to.eql({ w: 1.25, h: 2, x: 0.5 });
+    expect(layout[1][2]).to.eql({ w: 1.25, w2: 1.5, h: 2, h2: 1, x: 0.5, x2: -0.25 });
   });
 
   it('renders a row', async () => {
@@ -62,6 +62,6 @@ describe('Kle', async () => {
     ];
     const kle = new Kle(keys);
     const layout = kle.asJson();
-    expect(layout[1][16]).to.eql({ w: 1.25, h: 2, x: 0.5 });
+    expect(layout[1][16]).to.eql({ w: 1.25, w2: 1.5, h: 2, h2: 1, x: 0.5, x2: -0.25 });
   });
 });
