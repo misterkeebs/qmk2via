@@ -1,30 +1,11 @@
 const { expect } = require('chai');
 const _ = require('lodash');
 
-const Key = require('../src/Key');
 const Kle = require('../src/Kle');
 const RowDiffer = require('../src/RowDiffer');
-const { loadBoard } = require('./utils');
+const { loadBoard, makeRow } = require('./utils');
 
 describe('RowDiffer', async () => {
-  const makeRow = (...labels) => {
-    let x = 0;
-    const row = 0;
-    let col = 0;
-    return labels.map(l => {
-      const [label, opts] = _.isArray(l) ? l : [l, {}];
-      opts.y ||= 0;
-      opts.w ||= 1;
-      opts.x ||= x;
-      opts.x += opts.dx || 0;
-      opts.row = row;
-      opts.col = col++;
-      delete opts.dx;
-      x = opts.x + opts.w;
-      return Key.build({ label, ...opts });
-    });
-  };
-
   it('renders row with all differences highlighted and to the side', async () => {
     const base = makeRow(['Shift', { w: 2.25 }], 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', ['Shift', { w: 2.25 }]);
     const row1 = makeRow(['Shift', { w: 2.25 }], 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', ['Shift', { w: 1.75 }], 'Fn');
@@ -41,5 +22,13 @@ describe('RowDiffer', async () => {
     const rd = new RowDiffer(base, 4);
     const res = new Kle(rd.diff(row1)).toKle();
     expect(res).to.eql(`[{"w":1.25,"c":"#FFDFD3"},"Ctrl\\n\\n\\n4,0",{"w":1.25},"Win\\n\\n\\n4,0",{"w":1.25},"Alt\\n\\n\\n4,0",{"w":6.25},"\\n\\n\\n4,0",{"w":1.25},"Win\\n\\n\\n4,0",{"w":1.25},"Alt\\n\\n\\n4,0",{"w":1.25},"Menu\\n\\n\\n4,0",{"w":1.25},"Ctrl\\n\\n\\n4,0",{"w":1.5,"x":0.25},"Ctrl\\n\\n\\n4,1","Win\\n\\n\\n4,1",{"w":1.5},"Alt\\n\\n\\n4,1",{"w":7},"\\n\\n\\n4,1",{"w":1.5},"Win\\n\\n\\n4,1","Alt\\n\\n\\n4,1",{"w":1.5},"Ctrl\\n\\n\\n4,1"]`);
+  });
+
+  it(`does't repeat same items`, async () => {
+    const board = loadBoard('signature65');
+    const layouts = Object.values(board.layouts);
+    const rd = new RowDiffer(layouts[0].getRow(4));
+    const res = new Kle(rd.diff(...layouts.slice(1).map(l => l.getRow(4)))).asJson();
+    expect(res[1].filter(_.isString).length).to.eql(14);
   });
 });

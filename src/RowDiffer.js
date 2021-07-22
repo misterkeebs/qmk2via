@@ -27,13 +27,15 @@ class RowDiffer {
   }
 
   diff(...rows) {
-    const rowDiffs = _.uniq(rows.map(r => diff(this.base, r)));
+    const tempDiff = rows.map(r => diff(this.base, r));
+    const rowDiffs = _.uniqBy(tempDiff, rd => rd.map(d => `${d[0]}::${d[1].hashCode()}`).join('||'));
     const keys = _.clone(this.base);
     const lastKey = keys[keys.length - 1];
     let cx = lastKey.x + lastKey.w;
     let cy = _.min(keys.map(k => k.y));
     let cc = this.lastLabelNum;
     const keyProps = {};
+    const diffGroups = [];
     rowDiffs.forEach((row, i) => {
       // no additions to the base row, skip this row
       if (row.filter(([type]) => type === '+').length < 1) return;
@@ -62,7 +64,7 @@ class RowDiffer {
         key.viaLabel = [n, 0];
       });
 
-      const adds = row.filter(([type]) => type === '+').forEach(([__, key]) => {
+      row.filter(([type]) => type === '+').forEach(([__, key]) => {
         const newKey = _.clone(key);
         key.x = cx;
         key.c = color;
