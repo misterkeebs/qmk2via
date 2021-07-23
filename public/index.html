@@ -10,37 +10,45 @@
   <link
     href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900'
     rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="./styles.css">
   <title>MrKeebs QMK2VIA</title>
 </head>
 
-<body>
-  <h1>MrKeebs QMK to Via layout translator</h1>
+<body class="container">
+  <header>MrKeebs QMK to Via layout translator</header>
 
   <div id="main" class="panel">
-    <p>Select a QMK keyboard folder to translate</p>
-    <p><button id="picker">Choose Folder</button></p>
+    <nav>Teste</nav>
+    <button id="picker">
+      <i class="fa fa-folder-open-o"></i>
+      Choose Folder
+    </button>
+    <div id="main-footer">
+      Something
+    </div>
   </div>
 
-  <div id="keyboard-data" class="hidden panel">
-    <div class="info">
-      <p>
-        <b>Manufacturer</b><br />
-        <span id="keyboard-manufacturer"></span>
-      </p>
-      <p>
-        <b>Keyboard</b><br />
-        <span id="keyboard-model"></span>
-      </p>
-      <p>
-        <b>Layouts</b>
-        <span id="keyboard-layouts"></span>
-      </p>
+  <!-- <div id="keyboard-data" class="hidden panel">
+    <div class="header">
+      <a class="link" href="#">
+        <i class="fa fa-arrow-left"></i><span class="text">Back</span>
+      </a>
+      <div class="tag">
+        <span id="keyboard-model">MrKeebs</span>
+        <span id="keyboard-manufacturer">Elongate</span>
+      </div>
+    </div>
+
+    <div id="keyboard-layouts" class="layouts">
+      <div>Layout 1</div>
+      <div>Layout 2</div>
+      <div>Layout 3</div>
     </div>
 
     <p>
       <button class="back">Back</button>
-      <button id="preview">Preview VIA File</button>
+      <button id="preview">Preview VIA Layout on KLE</button>
       <button id="convert">Generate VIA File</button>
     </p>
   </div>
@@ -65,7 +73,7 @@
     <p><span id="error-message"></span></p>
     <pre id="error-details"></pre>
     <p><button class="restart">Start over</button></p>
-  </div>
+  </div> -->
 </body>
 
 </html>

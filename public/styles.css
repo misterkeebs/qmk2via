@@ -1,13 +1,44 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
 body {
   font-family: 'Roboto';
-  background: rgb(42, 43, 47) no-repeat top right url('./icon.png');
+  background: rgb(42, 43, 47);
   color: #fff;
 }
 
-h1 {
-  height: 60px;
-  margin-top: 35px;
+.container {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+header {
+  padding: 20px;
+  font-size: 1.5em;
   font-weight: 300;
+}
+
+.panel {
+  flex: 1;
+  display: flex;
+  text-align: center;
+  width: 100vw;
+}
+
+.panel main {
+  flex: 1;
+}
+
+.panel nav, .panel aside {
+  flex: 0 0 12em;
+}
+
+.panel nav {
+  order: -1;
 }
 
 .hidden {
@@ -18,11 +49,79 @@ a {
   color: rgb(50,156,223);
 }
 
+pre {
+  font-family: "Courier New", Courier, monospace;
+}
+
 pre, .info {
   background: #485055;
-  /* font-family: 'Roboto Mono'; */
-  font-family: "Courier New", Courier, monospace;
   border: 1px rgb(30, 31, 33);
   border-radius: 10px;
   padding: 10px 20px;
+}
+
+#picker {
+  width: 400px;
+  height: 200px;
+}
+
+#picker .fa {
+  font-size: 60px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+#keyboard-data {
+  border-top: 1px solid #444;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header > div {
+  display: flex;
+}
+
+.link {
+  padding: 10px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.link i {
+  margin-right: 5px;
+}
+
+.link .text {
+  font-size: 1em;
+}
+
+.tag {
+  background-color: rgb(157, 104, 102);
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 0 0 5px 5px;
+  margin-right: 10px;
+  height: 20px;
+}
+
+.tag span:first-child {
+  margin-right: 4px;
+}
+
+.layouts {
+  padding: 40px 0;
+  display: flex;
+  justify-content: space-evenly;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.layouts > div {
+  width: 400px;
+  border: 1px solid #444;
+  padding: 10px;
+  margin: 0 5px;
 }
