@@ -21,6 +21,20 @@ describe('Board', async () => {
     });
   });
 
+  describe('board with lowercase kXX for the matrix', async () => {
+    beforeEach(async () => {
+      const layouts = readFixture('noah/noah.h');
+      const info = readFixture('noah/info.json');
+      const config = readFixture('noah/config.h');
+      board = new Board(layouts, config, info);
+    });
+
+    it('generates the via file', async () => {
+      const json = JSON.parse(board.toVia());
+      expect(json.layouts.keymap[0][16]).to.eql('0,14\n\n\n0,0');
+    });
+  });
+
   describe('board with multiple layouts', async () => {
     beforeEach(async () => {
       const layouts = readFixture('signature65/signature65.h');

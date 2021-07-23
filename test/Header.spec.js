@@ -61,6 +61,27 @@ describe('Header', async () => {
     });
   });
 
+  describe('header with lowercase kXX', async () => {
+    beforeEach(async () => {
+      const raw = readFixture('noah/noah.h');
+      header = new Header(raw);
+    });
+
+    it('return the parsed layouts', async () => {
+      expect(header.getLayouts()).to.eql([
+        'default',
+        'wkl',
+        'iso',
+        '65_iso_blocker',
+        'default_splitspace',
+      ]);
+    });
+
+    it('parses the matrix', async () => {
+      expect(header.matrices['default'][15]).to.eql([0, 15]);
+    });
+  });
+
   describe('header with one named layout', async () => {
     beforeEach(async () => {
       const raw = readFixture('wd60_d/wd60_d.h');
