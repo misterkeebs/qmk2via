@@ -23,7 +23,7 @@ describe('Kle', async () => {
     ];
     const kle = new Kle(keys);
     const layout = kle.asJson();
-    expect(layout[1][2]).to.eql({ w: 1.25, w2: 1.5, h: 2, h2: 1, x: 0.5, x2: -0.25 });
+    expect(layout[1][2]).to.eql({ w: 1.25, w2: 1.5, h: 2, h2: 1, x: 1.5, x2: -0.25 });
   });
 
   it('renders a row', async () => {
@@ -62,7 +62,7 @@ describe('Kle', async () => {
     ];
     const kle = new Kle(keys);
     const layout = kle.asJson();
-    expect(layout[1][16]).to.eql({ w: 1.25, w2: 1.5, h: 2, h2: 1, x: 0.5, x2: -0.25 });
+    expect(layout[1][16]).to.eql({ w: 1.25, w2: 1.5, h: 2, h2: 1, x: 1.5, x2: -0.25 });
   });
 
 
@@ -102,7 +102,7 @@ describe('Kle', async () => {
     ];
     const kle = new Kle(keys);
     const link = kle.toPermalink();
-    expect(link).to.eql('http://www.keyboard-layout-editor.com##@@_c=#cccccc;&=~&=!&=/@&=#&=$&=%25&=%5E&=/&&=*&=(&=)&=/_&=+&_w:2;&=Backspace&_x:0.5;&=%60&=/&larr/;;&@_w:1.5;&=Tab&=%3C&=%3E&=Nam%0AE&=R&=T&=Y&=U&=I&=O&=P&=%7B&=%7D&_w:1.5;&=%7C&_w:1.25&h:2&x:0.5&w2:1.5&h2:1&x2:-0.25;&=Enter');
+    expect(link).to.eql('http://www.keyboard-layout-editor.com##@@_c=#cccccc;&=~&=!&=/@&=#&=$&=%25&=%5E&=/&&=*&=(&=)&=/_&=+&_w:2;&=Backspace&_x:0.5;&=%60&=/&larr/;;&@_w:1.5;&=Tab&=%3C&=%3E&=Nam%0AE&=R&=T&=Y&=U&=I&=O&=P&=%7B&=%7D&_w:1.5;&=%7C&_w:1.25&h:2&x:1.5&w2:1.5&h2:1&x2:-0.25;&=Enter');
   });
 });
 

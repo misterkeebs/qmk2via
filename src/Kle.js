@@ -35,6 +35,7 @@ class Kle {
         opts.w2 = 1.5;
         opts.h2 = 1;
         opts.x2 = -0.25;
+        opts.x += 1;
       }
 
       if (opts.x) {
