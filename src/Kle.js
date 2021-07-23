@@ -75,15 +75,24 @@ class Kle {
       const trRow = row.map(key => {
         if (_.isString(key)) {
           const k = key
+            .replace(/\//g, '//')
             .replace(/@/g, '/@')
             .replace(/_/g, '/_')
+            .replace(/=/g, '/=')
+            .replace(/:/g, '/:')
+            .replace(/;/g, '/;')
             .replace(/%/g, '%25')
+            .replace(/"/g, '%22')
             .replace(/\^/g, '%5E')
             .replace(/\{/g, '%7B')
             .replace(/\}/g, '%7D')
+            .replace(/\[/g, '%5B')
+            .replace(/\]/g, '%5D')
+            .replace(/\\/g, '%5C')
             .replace(/\|/g, '%7C')
             .replace(/\</g, '%3C')
             .replace(/\>/g, '%3E')
+            .replace(/`/g, '%60')
             .replace(/\n/g, '%0A')
             .replace(/&/g, '/&');
           return `=${k}`;

@@ -82,8 +82,8 @@ describe('Kle', async () => {
       Key.build({ row: 0, col: 11, w: 1, h: 1, x: 11, y: 0, label: '_' }),
       Key.build({ row: 0, col: 12, w: 1, h: 1, x: 12, y: 0, label: '+' }),
       Key.build({ row: 0, col: 13, w: 2, h: 1, x: 13, y: 0, label: 'Backspace' }),
-      Key.build({ row: 0, col: 13, w: 1, h: 1, x: 15.5, y: 0, label: '1' }),
-      Key.build({ row: 0, col: 14, w: 1, h: 1, x: 16.5, y: 0, label: '2' }),
+      Key.build({ row: 0, col: 13, w: 1, h: 1, x: 15.5, y: 0, label: '`' }),
+      Key.build({ row: 0, col: 14, w: 1, h: 1, x: 16.5, y: 0, label: '&larr;' }),
       Key.build({ row: 1, col: 0, w: 1.5, h: 1, x: 0, y: 1, label: 'Tab' }),
       Key.build({ row: 1, col: 1, w: 1, h: 1, x: 1.5, y: 1, label: '<' }),
       Key.build({ row: 1, col: 2, w: 1, h: 1, x: 2.5, y: 1, label: '>' }),
@@ -102,7 +102,7 @@ describe('Kle', async () => {
     ];
     const kle = new Kle(keys);
     const link = kle.toPermalink();
-    expect(link).to.eql('http://www.keyboard-layout-editor.com##@@_c=#cccccc;&=~&=!&=/@&=#&=$&=%25&=%5E&=/&&=*&=(&=)&=/_&=+&_w:2;&=Backspace&_x:0.5;&=1&=2;&@_w:1.5;&=Tab&=%3C&=%3E&=Nam%0AE&=R&=T&=Y&=U&=I&=O&=P&=%7B&=%7D&_w:1.5;&=%7C&_w:1.25&h:2&x:0.5&w2:1.5&h2:1&x2:-0.25;&=Enter');
+    expect(link).to.eql('http://www.keyboard-layout-editor.com##@@_c=#cccccc;&=~&=!&=/@&=#&=$&=%25&=%5E&=/&&=*&=(&=)&=/_&=+&_w:2;&=Backspace&_x:0.5;&=%60&=/&larr/;;&@_w:1.5;&=Tab&=%3C&=%3E&=Nam%0AE&=R&=T&=Y&=U&=I&=O&=P&=%7B&=%7D&_w:1.5;&=%7C&_w:1.25&h:2&x:0.5&w2:1.5&h2:1&x2:-0.25;&=Enter');
   });
 });
 

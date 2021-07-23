@@ -8,7 +8,6 @@ const temp = require('temp').track();
 unhandled({
   showDialog: true,
 });
-console.log('process.type', process.type);
 console.log = log.log;
 
 const Board = require('./src/Board');
@@ -117,10 +116,9 @@ ipcMain.on('load-layout', (event, name) => {
 
 ipcMain.on('load-kle-permalink', (event, name) => {
   const url = board.layouts[name].toPermalink();
+  log.log('KLE URL', url);
   const contents = `
   <script>
-  const urlSearchParams = new URLSearchParams(window.location.search);
-  const params = Object.fromEntries(urlSearchParams.entries());
   location.href = "${url}";
   </script>
   `;
