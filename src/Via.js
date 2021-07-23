@@ -43,16 +43,30 @@ class Via {
       const differ = new RowDiffer(baseLayout.getRow(i), lastLabelNum + 1);
       const rows = altLayouts.map(l => l.getRow(i));
       const keys = differ.diff(...rows);
-      lastLabelNum = _.max(keys.filter(k => k.viaLabel).map(k => k.viaLabel[0])) || -1;
+      const max = _.max(keys.filter(k => k.viaLabel).map(k => k.viaLabel[0]));
+      lastLabelNum = _.isUndefined(max) ? lastLabelNum : max;
       return keys;
     }).reduce((a, b) => a.concat(b));
   }
 
   toString() {
     const keys = this.getKeys();
-    const lastLabelNum = _.max(keys.filter(k => k.viaLabel).map(k => k.viaLabel[0])) || -1;
+    const lastLabelNum = _.max(keys.filter(k => k.viaLabel).map(k => k.viaLabel[0]));
 
-    const labels = [...Array(Math.max(lastLabelNum, 1) - 1)].map((_, i) => [`Label ${i + 1}`]);
+    const labels = [];
+    for (let i = 0; i <= lastLabelNum; i++) {
+      const labelRow = [];
+      labelRow.push(`Label ${i + 1}`);
+      const numVariants = _(keys)
+        .filter(k => k.viaLabel && k.viaLabel[0] === i)
+        .map(k => k.viaLabel[1])
+        .max();
+      for (let j = 0; j <= numVariants; j++) {
+        labelRow.push(`Option ${j + 1}`);
+      }
+
+      labels.push(labelRow);
+    }
 
     return JSON.stringify({
       name: `${this.config.manufacturer} ${this.config.product}`,
