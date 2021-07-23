@@ -1,8 +1,9 @@
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
-const path = require('path');
 const fs = require('fs');
 const log = require('electron-log');
+const path = require('path');
 const unhandled = require('electron-unhandled');
+const temp = require('temp').track();
 
 unhandled({
   showDialog: true,
@@ -105,4 +106,27 @@ ipcMain.on('convert-keyboard', async (event, arg) => {
   console.log('file', file);
   fs.writeFileSync(file, board.toVia());
   event.reply('keyboard-converted', file);
+});
+
+ipcMain.on('load-layout', (event, name) => {
+  console.log('loading layout', name);
+  const layout = board.layouts[name].toString();
+  console.log(layout);
+  event.reply('layout-loaded', layout);
+});
+
+ipcMain.on('load-kle-permalink', (event, name) => {
+  const url = board.layouts[name].toPermalink();
+  const contents = `
+  <script>
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const params = Object.fromEntries(urlSearchParams.entries());
+  location.href = "${url}";
+  </script>
+  `;
+  const tmpPath = temp.mkdirSync('qmktools');
+  const file = path.join(tmpPath, 'redirect.html');
+  fs.writeFileSync(file, contents);
+
+  event.reply('kle-permalink-loaded', `file://${file}`);
 });

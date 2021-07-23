@@ -137,6 +137,10 @@ class Layout {
   toKle(label) {
     return new Kle(this.keys).toKle(label);
   }
+
+  toPermalink(label) {
+    return new Kle(this.keys).toPermalink();
+  }
 }
 
 module.exports = Layout;

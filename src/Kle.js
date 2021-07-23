@@ -67,6 +67,45 @@ class Kle {
       .replace(/^\[/g, '')
       .replace(/\]$/g, '');
   }
+
+  toPermalink(label) {
+    const kle = this.asJson(label);
+    const permalink = [];
+    kle.forEach(row => {
+      const trRow = row.map(key => {
+        if (_.isString(key)) {
+          const k = key
+            .replace(/@/g, '/@')
+            .replace(/_/g, '/_')
+            .replace(/%/g, '%25')
+            .replace(/\^/g, '%5E')
+            .replace(/\{/g, '%7B')
+            .replace(/\}/g, '%7D')
+            .replace(/\|/g, '%7C')
+            .replace(/\</g, '%3C')
+            .replace(/\>/g, '%3E')
+            .replace(/\n/g, '%0A')
+            .replace(/&/g, '/&');
+          return `=${k}`;
+        } if (_.isObject(key)) {
+          const res = _.map(key, (v, k) => {
+            if (k === 'c') {
+              return `${k}=${v}`;
+            } else {
+              return `${k}:${v}`;
+            }
+          });
+          res[0] = `_${res[0]}`;
+          res[res.length - 1] = `${res[res.length - 1]};`;
+          return res.join('&');
+        }
+      });
+      // trRow[0] = `@${trRow[0]}`;
+      permalink.push(trRow);
+    });
+    const uri = permalink.map(p => _.flatten(p).join('&')).join(';&@');
+    return `http://www.keyboard-layout-editor.com##@@${uri}`;
+  }
 }
 
 module.exports = Kle;

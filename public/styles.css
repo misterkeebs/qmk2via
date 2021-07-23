@@ -1,6 +1,6 @@
 body {
   font-family: 'Roboto';
-  background: #485055 no-repeat top right url('./icon.png');
+  background: rgb(42, 43, 47) no-repeat top right url('./icon.png');
   color: #fff;
 }
 
@@ -19,7 +19,9 @@ a {
 }
 
 pre, .info {
-  background: rgb(42, 43, 47);
+  background: #485055;
+  /* font-family: 'Roboto Mono'; */
+  font-family: "Courier New", Courier, monospace;
   border: 1px rgb(30, 31, 33);
   border-radius: 10px;
   padding: 10px 20px;
