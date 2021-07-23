@@ -41,6 +41,10 @@ class Board {
   toVia(baseLayout) {
     return new Via(this, baseLayout).toString();
   }
+
+  toPermalink(baseLayout) {
+    return new Via(this, baseLayout).toPermalink();
+  }
 }
 
 module.exports = Board;

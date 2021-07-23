@@ -34,18 +34,23 @@ class Via {
     if (layout) return layout.getRow(row);
   }
 
-  toString() {
+  getKeys() {
     const baseLayout = this.layouts[this.mainLayout];
     const altLayouts = Object.values(this.layouts).filter(l => l.name !== this.mainLayout);
 
     let lastLabelNum = -1;
-    const keys = baseLayout.map((row, i) => {
+    return baseLayout.map((row, i) => {
       const differ = new RowDiffer(baseLayout.getRow(i), lastLabelNum + 1);
       const rows = altLayouts.map(l => l.getRow(i));
       const keys = differ.diff(...rows);
       lastLabelNum = _.max(keys.filter(k => k.viaLabel).map(k => k.viaLabel[0])) || -1;
       return keys;
     }).reduce((a, b) => a.concat(b));
+  }
+
+  toString() {
+    const keys = this.getKeys();
+    const lastLabelNum = _.max(keys.filter(k => k.viaLabel).map(k => k.viaLabel[0])) || -1;
 
     const labels = [...Array(Math.max(lastLabelNum, 1) - 1)].map((_, i) => [`Label ${i + 1}`]);
 
@@ -60,6 +65,10 @@ class Via {
         keymap: new Kle(keys).asJson('matrix'),
       },
     }, null, 2);
+  }
+
+  toPermalink() {
+    return new Kle(this.getKeys()).toPermalink('matrix');
   }
 }
 

@@ -28,6 +28,11 @@ const { ipcRenderer, shell } = require('electron');
     const res = ipcRenderer.send('convert-keyboard');
   });
 
+  $('#preview').addEventListener('click', evt => {
+    evt.preventDefault();
+    const res = ipcRenderer.send('load-via-preview');
+  });
+
   const restart = evt => {
     evt.preventDefault();
     kb.reset();

@@ -53,6 +53,19 @@ app.whenReady().then(() => {
 //   console.error('Unhandled error', err);
 // });
 
+const getRedirectFile = url => {
+  const contents = `
+  <script>
+  location.href = "${url}";
+  </script>
+  `;
+  const tmpPath = temp.mkdirSync('qmktools');
+  const file = path.join(tmpPath, 'redirect.html');
+  console.log('writing temp file', file);
+  fs.writeFileSync(file, contents);
+  return file;
+};
+
 ipcMain.on('select-keyboard', async (event, arg) => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory'],
@@ -114,17 +127,14 @@ ipcMain.on('load-layout', (event, name) => {
   event.reply('layout-loaded', layout);
 });
 
+ipcMain.on('load-via-preview', event => {
+  const url = board.toPermalink();
+  log.log('VIA KLE URL', url);
+  event.reply('kle-permalink-loaded', `file://${getRedirectFile(url)}`);
+});
+
 ipcMain.on('load-kle-permalink', (event, name) => {
   const url = board.layouts[name].toPermalink();
   log.log('KLE URL', url);
-  const contents = `
-  <script>
-  location.href = "${url}";
-  </script>
-  `;
-  const tmpPath = temp.mkdirSync('qmktools');
-  const file = path.join(tmpPath, 'redirect.html');
-  fs.writeFileSync(file, contents);
-
-  event.reply('kle-permalink-loaded', `file://${file}`);
+  event.reply('kle-permalink-loaded', `file://${getRedirectFile(url)}`);
 });
