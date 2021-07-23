@@ -39,5 +39,22 @@ describe('Key', async () => {
       `.trim();
       expect(key.toString()).to.eql(exp);
     });
+
+    it('renders iso', async () => {
+      const key = new Key(0, 0);
+      key.w = 1.25;
+      key.h = 2;
+      exp = dedent`
+      ┌──────────┐
+      │          │
+      │          │
+      └─┐        │
+        │        │
+        │        │
+        │        │
+        └────────┘
+      `.trim();
+      expect(key.toString()).to.eql(exp);
+    });
   });
 });

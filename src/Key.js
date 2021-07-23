@@ -31,11 +31,26 @@ class Key {
     const res = [];
     const width = (this.w * Key.XFACT) - 2;
     const height = (this.h * Key.YFACT) - 2;
-    res.push('┌' + Array(width + 1).join('─') + '┐');
+
+    res.push('┌' + '─'.repeat(width) + '┐');
     for (let i = 0; i < height; i++) {
-      res.push('│' + Array(width + 1).join(' ') + '│');
+      res.push('│' + ' '.repeat(width) + '│');
     }
-    res.push('└' + Array(width + 1).join('─') + '┘');
+    res.push('└' + '─'.repeat(width) + '┘');
+
+    if (this.w == 1.25 && this.h === 2) {
+      const lw = 1.5 * Key.XFACT;
+      const sw = 1.25 * Key.XFACT;
+      res[0] = '┌' + '─'.repeat(lw - 2) + '┐';
+      let i;
+      for (i = 1; i < height / 2; i++) {
+        res[i] = '│' + ' '.repeat(lw - 2) + '│';
+      }
+      res[i] = '└' + '─' + '┐' + ' '.repeat(sw - 2) + '│';
+      for (let j = i + 1; j < res.length; j++) {
+        res[j] = ' '.repeat(0.25 * Key.XFACT) + res[j];
+      }
+    }
     return res.join('\n');
   }
 

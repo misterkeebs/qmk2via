@@ -62,8 +62,9 @@ class Layout {
       .map(n => [...Array(Key.XFACT * (mx + 1))].map(m => ' '));
     this.keys.forEach(key => {
       const skey = key.toString().split('\n');
+      const dx = key.w === 1.25 && key.h === 2 ? -0.25 : 0;
       const iy = key.y * Key.YFACT;
-      const ix = key.x * Key.XFACT;
+      const ix = (key.x + dx) * Key.XFACT;
       skey.forEach((line, y) => {
         for (let x = 0; x < line.length; x++) {
           rows[iy + y][ix + x] = line.charAt(x);
@@ -72,7 +73,7 @@ class Layout {
       const ilx = ix + 2;
       const ily = iy + 1;
       key.label.split('').forEach((c, x) => {
-        if (x < key.w * Key.XFACT) {
+        if (x < (key.w * Key.XFACT) - 3) {
           rows[ily][ilx + x] = c;
         }
       });
