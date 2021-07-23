@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Roboto';
-  background: rgb(42, 43, 47);
+  background: rgb(42, 43, 47); /* no-repeat top right url('./icon.png'); */
   color: #fff;
 }
 
@@ -20,49 +20,92 @@ header {
   padding: 20px;
   font-size: 1.5em;
   font-weight: 300;
+  border-bottom: 1px solid #444;
 }
 
 .panel {
-  flex: 1;
-  display: flex;
   text-align: center;
-  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  flex: auto;
 }
 
-.panel main {
+.panel-body {
+  flex: auto;
+}
+
+.panel-footer {
+  padding: 20px;
+  display: flex;
+  justify-content: last baseline;
+  border-top: 1px solid #444;
+}
+
+.panel-footer > * {
   flex: 1;
 }
 
-.panel nav, .panel aside {
-  flex: 0 0 12em;
+.panel-footer > * {
+  margin: 5px;
 }
 
-.panel nav {
-  order: -1;
+.panel-footer > *:first-child {
+  margin-left: 0;
+}
+
+.panel-footer > *:last-child {
+  margin-right: 0;
+}
+
+.panel-footer > button {
+  padding: 10px;
+  background: #333;
+  border: 1px solid #555;
+  color: rgb(50,156,223);
+  text-decoration: none;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.panel-footer > button:hover {
+  background-color: #444;
+}
+
+.panel-body--centered {
+  position: relative;
+}
+
+.panel-body--centered > * {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	transform: translateX(-50%) translateY(-50%);
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 a {
   color: rgb(50,156,223);
+  text-decoration: none;
+  font-weight: 400;
+  text-transform: uppercase;
 }
 
-pre {
-  font-family: "Courier New", Courier, monospace;
-}
-
-pre, .info {
-  background: #485055;
-  border: 1px rgb(30, 31, 33);
-  border-radius: 10px;
-  padding: 10px 20px;
-}
+/**
+ * Main Panel
+ */
 
 #picker {
-  width: 400px;
+  width: 600px;
   height: 200px;
+  background: transparent;
+  border-style: dashed;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1.2em;
 }
 
 #picker .fa {
@@ -71,17 +114,12 @@ pre, .info {
   margin-bottom: 10px;
 }
 
+/**
+ * Keyboard Data Panel
+ */
+
 #keyboard-data {
   border-top: 1px solid #444;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.header > div {
-  display: flex;
 }
 
 .link {
@@ -99,12 +137,15 @@ pre, .info {
 }
 
 .tag {
+  position: absolute;
+  right: 10px;
+
   background-color: rgb(157, 104, 102);
   text-transform: uppercase;
   padding: 5px 10px;
   border-radius: 0 0 5px 5px;
   margin-right: 10px;
-  height: 20px;
+  height: 25px;
 }
 
 .tag span:first-child {
@@ -120,8 +161,25 @@ pre, .info {
 }
 
 .layouts > div {
-  width: 400px;
+  /* flex: 1 1 auto; */
+  width: 320px;
   border: 1px solid #444;
   padding: 10px;
   margin: 0 5px;
+  margin-top: 10px;
 }
+
+/**
+ * Error and Info
+ */
+pre {
+  font-family: "Courier New", Courier, monospace;
+}
+
+pre, .info {
+  background: #485055;
+  border: 1px rgb(30, 31, 33);
+  border-radius: 10px;
+  padding: 10px 20px;
+}
+

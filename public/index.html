@@ -19,61 +19,62 @@
   <header>MrKeebs QMK to Via layout translator</header>
 
   <div id="main" class="panel">
-    <nav>Teste</nav>
-    <button id="picker">
-      <i class="fa fa-folder-open-o"></i>
-      Choose Folder
-    </button>
-    <div id="main-footer">
-      Something
+    <div class="panel-body panel-body--centered">
+      <button id="picker">
+        <i class="fa fa-folder-open-o"></i>
+        Click here and choose a QMK keyboard folder
+      </button>
+    </div>
+    <div class="panel-footer">
+      Select a QMK keyboard folder to start.
     </div>
   </div>
 
-  <!-- <div id="keyboard-data" class="hidden panel">
-    <div class="header">
-      <a class="link" href="#">
-        <i class="fa fa-arrow-left"></i><span class="text">Back</span>
-      </a>
+  <div id="keyboard-data" class="panel hidden">
+    <div class="panel-body">
       <div class="tag">
-        <span id="keyboard-model">MrKeebs</span>
         <span id="keyboard-manufacturer">Elongate</span>
+        <span id="keyboard-model">MrKeebs</span>
+      </div>
+
+      <div id="keyboard-layouts" class="layouts">
+        <div>Layout 1</div>
+        <div>Layout 2</div>
+        <div>Layout 3</div>
+        <div>Layout 4</div>
       </div>
     </div>
 
-    <div id="keyboard-layouts" class="layouts">
-      <div>Layout 1</div>
-      <div>Layout 2</div>
-      <div>Layout 3</div>
+    <div class="panel-footer">
+      <button class="back">&larr; Back</button>
+      <button href="#" id="preview">Preview VIA Layout on KLE</button>
+      <button id="convert">Select Destination Folder &rarr;</button>
     </div>
-
-    <p>
-      <button class="back">Back</button>
-      <button id="preview">Preview VIA Layout on KLE</button>
-      <button id="convert">Generate VIA File</button>
-    </p>
   </div>
 
-  <div id="layout" class="hidden panel">
+  <div id="layout" class="panel hidden">
     <pre id="layout-contents"></pre>
     <p><button class="back">Back</button></p>
   </div>
 
-  <div id="success" class="hidden panel">
-    <div class="info">
-      <p>
+  <div id="success" class="panel hidden">
+    <div class="panel-body panel-body--centered">
+      <div>
         Via file saved:<br />
         <span id="via-file"></span>
-      </p>
+      </div>
     </div>
 
-    <p><button class="restart">Start over</button></p>
+    <div class="panel-footer">
+      <button class="restart">Pick a new keyboard</button>
+    </div>
   </div>
 
-  <div id="error" class="hidden panel">
+  <div id="error" class="panel hidden">
     <p><span id="error-message"></span></p>
     <pre id="error-details"></pre>
     <p><button class="restart">Start over</button></p>
-  </div> -->
+  </div>
 </body>
 
 </html>

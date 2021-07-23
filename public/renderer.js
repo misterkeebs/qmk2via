@@ -2,8 +2,8 @@ const { ipcRenderer, shell } = require('electron');
 (function () {
   const $ = selector => document.querySelector(selector);
 
-  const hide = selector => document.querySelectorAll(selector).forEach(el => el.style.display = 'none');
-  const show = selector => document.querySelectorAll(selector).forEach(el => el.style.display = 'block');
+  const hide = selector => document.querySelectorAll(selector).forEach(el => el.classList.add('hidden'));
+  const show = selector => document.querySelectorAll(selector).forEach(el => el.classList.remove('hidden'));
 
   const history = ['main'];
 
@@ -20,17 +20,17 @@ const { ipcRenderer, shell } = require('electron');
 
   $('#picker').addEventListener('click', evt => {
     evt.preventDefault();
-    const res = ipcRenderer.send('select-keyboard');
+    ipcRenderer.send('select-keyboard');
   });
 
   $('#convert').addEventListener('click', evt => {
     evt.preventDefault();
-    const res = ipcRenderer.send('convert-keyboard');
+    ipcRenderer.send('convert-keyboard');
   });
 
   $('#preview').addEventListener('click', evt => {
     evt.preventDefault();
-    const res = ipcRenderer.send('load-via-preview');
+    ipcRenderer.send('load-via-preview');
   });
 
   const restart = evt => {
@@ -40,7 +40,7 @@ const { ipcRenderer, shell } = require('electron');
   };
 
   const showOnly = (id, skipHistory) => {
-    document.querySelectorAll('.panel').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.panel').forEach(el => el.classList.add('hidden'));
     show(`#${id}`);
     if (!skipHistory) history.push(id);
   };
@@ -82,16 +82,16 @@ const { ipcRenderer, shell } = require('electron');
 
   ipcRenderer.on('keyboard-selected', (event, { config, layouts }) => {
     const layoutLinks = layouts.map(l => `
-      <li>
+      <div>
         ${l}
-        <a class="layout-link" href="#" data-layout="${l}">view</a>
-        <a class="layout-kle-link" href="#" data-layout="${l}">kle</a>
-      </li>
+        <!--<a class="layout-link" href="#" data-layout="${l}">view</a>
+        <a class="layout-kle-link" href="#" data-layout="${l}">kle</a>-->
+      </div>
     `).join('');
 
     kb.manufacturer.innerText = config.manufacturer;
     kb.model.innerText = config.product;
-    kb.layouts.innerHTML = `<ul>${layoutLinks}</ul>`;
+    kb.layouts.innerHTML = `${layoutLinks}`;
 
     document.querySelectorAll('.layout-link').forEach(el => {
       el.addEventListener('click', evt => {
@@ -131,4 +131,6 @@ const { ipcRenderer, shell } = require('electron');
     });
     showOnly('success');
   });
+
+  ipcRenderer.send('select-keyboard');
 })();
