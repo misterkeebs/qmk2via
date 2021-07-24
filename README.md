@@ -1,24 +1,43 @@
-# KLE Matrix to QMK Layout Converter
+# QMK to VIA Layout converter
 
-This project allows a quick generation of the QMK layout source code from a Keyboard Layout Editor layout describing the Row and Column of each key on the keyboard matrix.
+This tool uses a QMK keyboard folder to generate the JSON file necessary to load your keyboard into VIA. It also allows you to reverse engineer the KLE layout from the same QMK keyboard folder.
 
-In order to create the layout source code, you have to create the row/col layout using MechMerlin's format where you have the Column pin on the top left and the Row pin on the bottm left of the key legend area, like below:
+In order for a given folder to be recognized as valid, it needs to have the matrix header (`<board-name>.h`), the config file (`config.h`) and the layout JSON file (`info.json`).
 
-![](assets/matrix.png)
+## Usage
 
-The KLE raw data for this example would be like below:
+Download the [latest release](https://github.com/misterkeebs/qmk2via/releases/latest) (only Win/macOS supported for the time being), install it and execute it.
 
-```
-[{y:0.25},"D0\nB0","D1\nB0","D2\nB0","D3\nB0","D5\nB0","D4\nB0","D6\nB0","D7\nB0","B4\nB0","F7\nB0","F6\nB0","F5\nB0","F4\nB0",{c:"#b0a7fa"},"F1\nB0","F0\nB0",{c:"#cccccc"},"F0\nB7"],
-[{w:1.5},"D0\nB1","D1\nB1","D2\nB1","D3\nB1","D5\nB1","D4\nB1","D6\nB1","D7\nB1","B4\nB1","F7\nB1","F6\nB1","F5\nB1","F4\nB1",{w:1.5},"F4\nB2","F0\nB1"],
-[{w:1.75},"D0\nB2","D1\nB2","D2\nB2","D3\nB2","D5\nB2","D4\nB2","D6\nB2","D7\nB2","B4\nB2","F7\nB2","F6\nB2","F5\nB2",{w:2.25},"F1\nB1","F0\nB2"],
-[{w:2.25},"D0\nB3","D2\nB3","D3\nB3","D5\nB3","D4\nB3","D6\nB3","D7\nB3","B4\nB3","F7\nB3","F6\nB3","F5\nB3",{w:1.75},"F4\nB3","F1\nB3","F0\nB3"],
-[{c:"#e6aeae",w:1.5},"D0\nB7","D1\nB7",{w:1.5},"D2\nB7",{w:7},"D6\nB7",{w:1.5},"F7\nB7",{x:0.5,c:"#cccccc"},"F5\nB7","F4\nB7","F1\nB7"]
+The first thing it will show is a directory picker:
 
-```
+![Main Window](doc/app1.png)
 
-Then basically all you need to do is paste it into the tool. As soon as you exit the text area, the tool will try to guess the row and col pins from the raw data. After clicking the **Convert** button, you will be presented with the QMK layout source code, like below:
+Once you select a valid folder, the tool will parse the files and display a graphical representation of each  detected layout:
 
-![](assets/convert.png)
+![Layouts Window](doc/app2.png)
 
-Then finally all you have to do is copy the code into your keyboard's `keyboard.h` file.
+From this screen, if you click one of the layouts, it will open the layout on the Keyboard Layout Editor website, preloading the layout:
+
+![Default Splitspace Layout on KLE](doc/kle1.png)
+
+You can also use the **Preview VIA Layout on KLE** to check how the generated VIA layout will look like before continuing:
+
+![VAI Layout on KLE](doc/kle2.png)
+
+Finally, when you click **Select Destination Folder** another directory picker dialog will open, and you'll be given a chance to select the folder where you want your final JSON file to be saved.
+
+![Success Window](doc/app3.png)
+
+Next step is to go to VIA, click the **Settings** tab and toggle the **Show Design tab** option, making sure it's on:
+
+![VIA Settings tab](doc/via1.png)
+
+Finally, click the **Design** tab and click the **Load** button:
+
+![VIA Design tab](doc/via2.png)
+
+Select the file you saved beforehand and it should open on VIA:
+
+![VIA Design tab](doc/via3.png)
+
+And you're done. Just plug in the keyboard and VIA should work automatically.
