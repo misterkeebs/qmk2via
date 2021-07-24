@@ -169,6 +169,11 @@ a {
   margin-top: 10px;
 }
 
+.layout > img {
+  max-width: 500px;
+  max-height: 300px;
+}
+
 /**
  * Error and Info
  */
