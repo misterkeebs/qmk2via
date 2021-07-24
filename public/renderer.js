@@ -80,14 +80,16 @@ const { ipcRenderer, shell } = require('electron');
     showOnly('error');
   });
 
-  ipcRenderer.on('keyboard-selected', (event, { config, layouts }) => {
+  ipcRenderer.on('keyboard-selected', (event, { config, layouts, images }) => {
+    console.log('images', images);
+    console.log('layouts', layouts.map(l => l.name));
     const layoutLinks = layouts.map(l => `
       <div>
+        <img class="layout-kle-link" src="data:image/jpg;base64,${images[l]}" data-layout="${l}" width="500" />
         ${l}
-        <!--<a class="layout-link" href="#" data-layout="${l}">view</a>
-        <a class="layout-kle-link" href="#" data-layout="${l}">kle</a>-->
       </div>
     `).join('');
+    console.log('layoutLinks', layoutLinks);
 
     kb.manufacturer.innerText = config.manufacturer;
     kb.model.innerText = config.product;

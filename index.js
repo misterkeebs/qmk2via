@@ -90,10 +90,21 @@ ipcMain.on('select-keyboard', async (event, arg) => {
     const info = tryAndRead(`${mainPath}/info.json`);
     console.log('before board');
     board = new Board(header, config, info);
+    const images = {};
+    const tmpPath = temp.mkdirSync('qmktools');
+    for (let i = 0; i < Object.values(board.layouts).length; i++) {
+      const layout = Object.values(board.layouts)[i];
+      const fileName = path.join(tmpPath, `${layout.name}.png`);
+      console.log('Creating', fileName);
+      await layout.toPNG(fileName);
+      const image = fs.readFileSync(fileName).toString('base64');
+      images[layout.name] = image;
+    }
     console.log('after board');
     event.reply('keyboard-selected', {
       config: board.config,
       layouts: Object.keys(board.layouts),
+      images
     });
   } catch (error) {
     console.error(error);

@@ -1,4 +1,7 @@
+const Canvas = require('canvas');
+const fs = require('fs');
 const _ = require('lodash');
+
 const Key = require('./Key');
 const Kle = require('./Kle');
 
@@ -141,6 +144,86 @@ class Layout {
 
   toPermalink(label) {
     return new Kle(this.keys).toPermalink();
+  }
+
+  toPNG(name, label) {
+    return new Promise((resolve, reject) => {
+      const canvas = this.toCanvas(label);
+      const out = fs.createWriteStream(name);
+      const stream = canvas.createPNGStream();
+
+      out.on('finish', resolve);
+      out.on('error', reject);
+
+      stream.pipe(out);
+    });
+  }
+
+  toCanvas(label) {
+    function drawRect(ctx, x, y, w, h, radius) {
+      const r = x + w;
+      const b = y + h;
+
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(r - radius, y);
+      ctx.quadraticCurveTo(r, y, r, y + radius);
+      ctx.lineTo(r, y + h - radius);
+      ctx.quadraticCurveTo(r, b, r - radius, b);
+      ctx.lineTo(x + radius, b);
+      ctx.quadraticCurveTo(x, b, x, b - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+    }
+
+    function strokeRoundRect(ctx, x, y, w, h, radius) {
+      drawRect(ctx, x, y, w, h, radius);
+      ctx.stroke();
+    }
+
+    function fillRoundRect(ctx, x, y, w, h, radius) {
+      drawRect(ctx, x, y, w, h, radius);
+      ctx.fill();
+    }
+
+    const KW = 50;
+    const KH = 50;
+
+    const maxx = _.max(this.keys.map(k => k.x + k.w));
+    const maxy = _.max(this.keys.map(k => k.y + k.h));
+    const canvas = Canvas.createCanvas(maxx * KW, maxy * KH);
+    const ctx = canvas.getContext('2d');
+
+    this.keys.forEach(key => {
+      const x0 = key.x * KW + 1;
+      const x1 = (key.w * KW) - 1;
+      const y0 = key.y * KH + 1;
+      const y1 = (key.h * KH) - 1;
+
+      ctx.strokeStyle = '#000';
+      strokeRoundRect(ctx, x0, y0, x1, y1, 3);
+
+      ctx.fillStyle = '#ddd';
+      ctx.lineWidth = 5;
+      fillRoundRect(ctx, x0 + 1, y0 + 1, x1 - 2, y1 - 2, 3);
+
+      const d = 3;
+      const d2 = parseInt(d + (d / 2)) + 1;
+      ctx.fillStyle = '#fff';
+      fillRoundRect(ctx, x0 + d2, y0 + d2 - 1, x1 - (d2 * 2), y1 - (d * 4) + 1, 3);
+      ctx.strokeStyle = '#aaa';
+      ctx.lineWidth = 1;
+      strokeRoundRect(ctx, x0 + d2, y0 + d2 - 1, x1 - (d2 * 2), y1 - (d * 4) + 1, 3);
+
+
+      const d3 = d2 + 4;
+      ctx.fillStyle = '#000';
+      ctx.font = '12px "Helvetica","Arial",sans-serif';
+      ctx.textAlign = 'top';
+      ctx.fillText(key.label, x0 + d2 + 4, y0 + 12 + d2 + 2);
+    });
+
+    return canvas;
   }
 }
 
