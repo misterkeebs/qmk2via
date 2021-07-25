@@ -84,8 +84,9 @@ const { ipcRenderer, shell } = require('electron');
     console.log('images', images);
     console.log('layouts', layouts.map(l => l.name));
     const layoutLinks = layouts.map(l => `
-      <div>
-        <img class="layout-kle-link" src="data:image/jpg;base64,${images[l]}" data-layout="${l}" width="500" />
+      <div class="layout">
+        <img class="layout-kle-link" src="data:image/jpg;base64,${images[l]}" data-layout="${l}" />
+        <br/>
         ${l}
       </div>
     `).join('');

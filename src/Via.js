@@ -72,7 +72,7 @@ class Via {
       name: `${this.config.manufacturer} ${this.config.product}`,
       productId: this.config.productId,
       vendorId: this.config.vendorId,
-      ligntining: 'none',
+      lighting: 'none',
       matrix: { rows: this.config.rows, cols: this.config.cols },
       layouts: {
         labels: labels,
