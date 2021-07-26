@@ -2,23 +2,7 @@ const _ = require('lodash');
 const Kle = require('./Kle');
 const diff = require('array-diff')();
 
-const COLORS = [
-  '#E0BBE4',
-  '#957DAD',
-  '#D291BC',
-  '#FEC8D8',
-  '#FFDFD3',
-  '#E1BFE3',
-  '#F7D5EE',
-  '#FAC2CA',
-  '#D18CAF',
-  '#E3E3FF',
-  '#DFF2FD',
-  '#E2FCE6',
-  '#FCFADE',
-  '#FFEEE2',
-  '#FFDBDB',
-];
+const COLORS = ['#aaaaaa', '#cccccc', '#888888'];
 
 class RowDiffer {
   constructor(base, lastLabelNum = 0) {
@@ -52,7 +36,7 @@ class RowDiffer {
       const uniqueId = baseKeys.map(k => k.hashCode()).join('::');
       keyProps[uniqueId] = {
         uses: _.get(keyProps, `${uniqueId}.uses`, 0) + 1,
-        color: _.get(keyProps, `${uniqueId}.color`) || COLORS[cc++],
+        color: _.get(keyProps, `${uniqueId}.color`) || COLORS[cc++ % COLORS.length],
       };
 
       const n = this.lastLabelNum + Object.keys(keyProps).indexOf(uniqueId);

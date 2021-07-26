@@ -16,7 +16,7 @@ describe('Board', async () => {
 
     it('generates the via file', async () => {
       const json = JSON.parse(board.toVia());
-      expect(json.layouts.keymap[3][5]).to.eql({ w: 2.25, c: '#E0BBE4' });
+      expect(json.layouts.keymap[3][5]).to.eql({ w: 2.25, c: '#aaaaaa' });
       expect(json.layouts.keymap[3][15]).to.eql('3,10\n\n\n0,1');
     });
   });

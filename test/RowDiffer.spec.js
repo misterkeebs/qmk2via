@@ -13,7 +13,8 @@ describe('RowDiffer', async () => {
     const row3 = makeRow(['Shift', { w: 1.25 }], '|', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', ['Shift', { w: 2.25 }]);
     const rd = new RowDiffer(base);
     const res = new Kle(rd.diff(row1, row2, row3)).toKle();
-    expect(res).to.eql(`[{"w":2.25,"c":"#957DAD"},"Shift\\n\\n\\n1,0",{"c":"#cccccc"},"Z","X","C","V","B","N","M","<",">","?",{"w":2.25,"c":"#E0BBE4"},"Shift\\n\\n\\n0,0",{"w":1.75,"x":0.25},"Shift\\n\\n\\n0,1","Fn\\n\\n\\n0,1",{"x":0.25},"Fn\\n\\n\\n0,2",{"w":1.75},"Shift\\n\\n\\n0,2",{"w":1.25,"x":0.25,"c":"#957DAD"},"Shift\\n\\n\\n1,1","|\\n\\n\\n1,1"]`);
+    console.log(res);
+    expect(res).to.eql(`[{"w":2.25,"c":"#cccccc"},"Shift\\n\\n\\n1,0","Z","X","C","V","B","N","M","<",">","?",{"w":2.25,"c":"#aaaaaa"},"Shift\\n\\n\\n0,0",{"w":1.75,"x":0.25},"Shift\\n\\n\\n0,1","Fn\\n\\n\\n0,1",{"x":0.25},"Fn\\n\\n\\n0,2",{"w":1.75},"Shift\\n\\n\\n0,2",{"w":1.25,"x":0.25,"c":"#cccccc"},"Shift\\n\\n\\n1,1","|\\n\\n\\n1,1"]`);
   });
 
   it('renders completely different rows in different new rows', async () => {
@@ -21,7 +22,7 @@ describe('RowDiffer', async () => {
     const row1 = makeRow(['Ctrl', { w: 1.5 }], ['Win', { w: 1 }], ['Alt', { w: 1.5 }], ['', { w: 7 }], ['Win', { w: 1.5 }], ['Alt', { w: 1 }], ['Ctrl', { w: 1.5 }]);
     const rd = new RowDiffer(base, 4);
     const res = new Kle(rd.diff(row1)).toKle();
-    expect(res).to.eql(`[{"w":1.25,"c":"#FFDFD3"},"Ctrl\\n\\n\\n4,0",{"w":1.25},"Win\\n\\n\\n4,0",{"w":1.25},"Alt\\n\\n\\n4,0",{"w":6.25},"\\n\\n\\n4,0",{"w":1.25},"Win\\n\\n\\n4,0",{"w":1.25},"Alt\\n\\n\\n4,0",{"w":1.25},"Menu\\n\\n\\n4,0",{"w":1.25},"Ctrl\\n\\n\\n4,0",{"w":1.5,"x":0.25},"Ctrl\\n\\n\\n4,1","Win\\n\\n\\n4,1",{"w":1.5},"Alt\\n\\n\\n4,1",{"w":7},"\\n\\n\\n4,1",{"w":1.5},"Win\\n\\n\\n4,1","Alt\\n\\n\\n4,1",{"w":1.5},"Ctrl\\n\\n\\n4,1"]`);
+    expect(res).to.eql(`[{"w":1.25,"c":"#cccccc"},"Ctrl\\n\\n\\n4,0",{"w":1.25},"Win\\n\\n\\n4,0",{"w":1.25},"Alt\\n\\n\\n4,0",{"w":6.25},"\\n\\n\\n4,0",{"w":1.25},"Win\\n\\n\\n4,0",{"w":1.25},"Alt\\n\\n\\n4,0",{"w":1.25},"Menu\\n\\n\\n4,0",{"w":1.25},"Ctrl\\n\\n\\n4,0",{"w":1.5,"x":0.25},"Ctrl\\n\\n\\n4,1","Win\\n\\n\\n4,1",{"w":1.5},"Alt\\n\\n\\n4,1",{"w":7},"\\n\\n\\n4,1",{"w":1.5},"Win\\n\\n\\n4,1","Alt\\n\\n\\n4,1",{"w":1.5},"Ctrl\\n\\n\\n4,1"]`);
   });
 
   it(`does't repeat same items`, async () => {
