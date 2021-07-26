@@ -15,6 +15,9 @@ class Header {
   parse() {
     const matrices = {};
     const parsePosition = s => {
+      if (s.match(/^[Kk][0-9]{4}$/)) {
+        return [parseInt(s.slice(1, 3), 10), parseInt(s.slice(3), 10)];
+      }
       if (s.match(/^[Kk][0-9A-Fa-f]{2}$/)) {
         return [parseInt(s.charAt(1), 16), parseInt(s.charAt(2), 16)];
       }

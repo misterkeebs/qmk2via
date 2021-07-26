@@ -20,6 +20,19 @@ describe('Header', async () => {
     });
   });
 
+  describe('header with kXXXX notation', async () => {
+    beforeEach(async () => {
+      header = new Header(readFixture('xelus/kangaroo/kangaroo.h'));
+    });
+
+    it('generates the via file', async () => {
+      const matrix = header.matrices['all'];
+      expect(matrix[1]).to.eql([1, 0]);
+      expect(header.matrices['all'].filter(arr => _.isNaN(parseInt(arr[0], 10)) || _.isNaN(parseInt(arr[1], 10))).length).to.eql(0);
+    });
+  });
+
+
   describe('header with multiple layouts', async () => {
     beforeEach(async () => {
       const raw = readFixture('dz60/dz60.h');

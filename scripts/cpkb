@@ -1,0 +1,13 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+source "$SCRIPT_DIR/../.env"
+
+echo "Importing $1 as a test fixture."
+KBPATH="$1"
+KBNAME="${1##*/}"
+echo $KBPATH $KBNAME
+mkdir -p "./test/fixtures/$KBPATH"
+cp "../qmk_firmware/keyboards/$KBPATH/config.h" "./test/fixtures/$KBPATH"
+cp "../qmk_firmware/keyboards/$KBPATH/$KBNAME.h" "./test/fixtures/$KBPATH"
+cp "../qmk_firmware/keyboards/$KBPATH/info.json" "./test/fixtures/$KBPATH"

@@ -5,6 +5,7 @@ const Config = require('./Config');
 const Header = require('./Header');
 const Info = require('./Info');
 const Layout = require('./Layout');
+const MissingMatrixError = require('./MissingMatrixError');
 const { getLayoutName } = require('./Utils');
 const Via = require('./Via');
 
@@ -14,9 +15,10 @@ const fmt = arr => arr.map(fmti).join(',');
 const iskno = s => ['KC_NO', 'KNO', '____'].includes(s);
 
 class Board {
-  constructor(header, config, info, debug) {
+  constructor(header, config, info, { name, debug } = {}) {
     this.layouts = {};
     this.debug = debug;
+    this.name = name;
     this.header = new Header(header);
     this.config = new Config(config);
     this.info = new Info(info);
@@ -33,6 +35,10 @@ class Board {
       const layout = this.info.layouts[layoutName].layout;
       const { rows, cols } = this.config;
       const matrix = this.header.matrices[name];
+      if (!matrix) {
+        const boardName = this.name ? `${this.name}.h ` : ``;
+        throw new MissingMatrixError(`Found a layout called "${layoutName}" on info.json that is missing from the ${boardName}header file.`);
+      }
       obj[name] = new Layout(name, rows, cols, matrix, layout);
       return obj;
     }, {});

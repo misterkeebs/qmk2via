@@ -71,9 +71,21 @@
   </div>
 
   <div id="error" class="panel hidden">
-    <p><span id="error-message"></span></p>
-    <pre id="error-details"></pre>
-    <p><button class="restart">Start over</button></p>
+    <div class="panel-body panel-body--centered">
+      <div class="error-container">
+        <div class="error-message">
+          <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+          <br /><br />
+          <span id="error-message"></span>
+        </div>
+        <br /><br />
+        <pre id="error-details"></pre>
+      </div>
+    </div>
+
+    <div class="panel-footer">
+      <button class="restart">Start over</button>
+    </div>
   </div>
 </body>
 

@@ -11,6 +11,7 @@ unhandled({
 console.log = log.log;
 
 const Board = require('./src/Board');
+const MissingMatrixError = require('./src/MissingMatrixError');
 
 try {
   require('electron-reloader')(module)
@@ -89,7 +90,7 @@ ipcMain.on('select-keyboard', async (event, arg) => {
     const config = tryAndRead(`${mainPath}/config.h`);
     const info = tryAndRead(`${mainPath}/info.json`);
     console.log('before board');
-    board = new Board(header, config, info);
+    board = new Board(header, config, info, { name });
     const images = {};
     const tmpPath = temp.mkdirSync('qmktools');
     for (let i = 0; i < Object.values(board.layouts).length; i++) {
@@ -108,7 +109,11 @@ ipcMain.on('select-keyboard', async (event, arg) => {
     });
   } catch (error) {
     console.error(error);
-    if (error instanceof MissingRequiredFileError) {
+    if (error instanceof MissingMatrixError) {
+      console.log('missing matrix error', { message: error.message });
+      event.reply('error', { message: error.message });
+    }
+    else if (error instanceof MissingRequiredFileError) {
       console.log('sending', { message: error.message });
       event.reply('error', { message: error.message });
     } else {

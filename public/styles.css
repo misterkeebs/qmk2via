@@ -186,5 +186,21 @@ pre, .info {
   border: 1px rgb(30, 31, 33);
   border-radius: 10px;
   padding: 10px 20px;
+  width: 80%;
+  margin: auto;
 }
 
+.error-container {
+  width: 100%;
+  padding: 10px;
+}
+
+.error-message {
+  font-size: 1.3em;
+  font-weight: 300;
+}
+
+.error-message i {
+  font-size: 10em;
+  color: rgb(255, 206, 0);
+}

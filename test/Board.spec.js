@@ -21,6 +21,30 @@ describe('Board', async () => {
     });
   });
 
+  describe('board with kXXXX for the matrix', async () => {
+    beforeEach(async () => {
+      const layouts = readFixture('xelus/snap96/snap96.h');
+      const info = readFixture('xelus/snap96/info.json');
+      const config = readFixture('xelus/snap96/config.h');
+      board = new Board(layouts, config, info);
+    });
+
+    it('generates the via file', async () => {
+      const json = JSON.parse(board.toVia());
+      expect(json.layouts.keymap[1][1]).to.eql('1,1');
+    });
+  });
+
+  describe('board with a mismatch between layouts and matrices', async () => {
+    it('throws an error', async () => {
+      const layouts = readFixture('xelus/kangaroo/kangaroo.h');
+      const info = readFixture('xelus/kangaroo/info.json');
+      const config = readFixture('xelus/kangaroo/config.h');
+      expect(() => board = new Board(layouts, config, info, { name: 'kangaroo' }))
+        .to.throw('Found a layout called "LAYOUT" on info.json that is missing from the kangaroo.h header file.');
+    });
+  });
+
   describe('board with lowercase kXX for the matrix', async () => {
     beforeEach(async () => {
       const layouts = readFixture('noah/noah.h');
