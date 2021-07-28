@@ -4,7 +4,9 @@ const _ = require('lodash');
 const Key = require('../src/Key');
 const Board = require('../src/Board');
 
-const readFixture = name => fs.readFileSync(`${__dirname}/fixtures/${name}`, 'utf8');
+const getFixture = name => `${__dirname}/fixtures/${name}`;
+
+const readFixture = name => fs.readFileSync(getFixture(name), 'utf8');
 
 const loadBoard = name => {
   const layouts = readFixture(`${name}/${name}.h`);
@@ -19,9 +21,9 @@ const makeRow = (...labels) => {
   let col = 0;
   return labels.map(l => {
     const [label, opts] = _.isArray(l) ? l : [l, {}];
-    opts.y ||= 0;
-    opts.w ||= 1;
-    opts.x ||= x;
+    opts.y = opts.y || 0;
+    opts.w = opts.w || 1;
+    opts.x = opts.x || x;
     opts.x += opts.dx || 0;
     opts.row = row;
     opts.col = col++;
@@ -31,4 +33,4 @@ const makeRow = (...labels) => {
   });
 };
 
-module.exports = { readFixture, loadBoard, makeRow };
+module.exports = { getFixture, readFixture, loadBoard, makeRow };

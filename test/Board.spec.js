@@ -1,10 +1,32 @@
 const { expect } = require('chai');
-const { readFixture } = require('./utils');
+const { readFixture, getFixture } = require('./utils');
 
 const Board = require('../src/Board');
 
 describe('Board', async () => {
   let board;
+
+  describe('fromPath', async () => {
+    describe('with a regular board', async () => {
+      it('creates a Board instance with the proper paths', async () => {
+        const board = Board.fromPath(getFixture('db60'));
+        expect(board.name).to.eql('db60');
+      });
+    });
+
+    describe('with a board with versioning', async () => {
+      it('creates a Board instance with the proper paths', async () => {
+        const board = Board.fromPath(getFixture('deltasplit75/v2'));
+        expect(board.name).to.eql('deltasplit75 v2');
+      });
+    });
+
+    describe('with an invalid folder', async () => {
+      it('raises an error', async () => {
+        expect(() => Board.fromPath(getFixture('.'))).to.throw(/Directory doesn't seem to have files for a valid QMK keyboard./);
+      });
+    });
+  });
 
   describe('board with different bottom rows', async () => {
     beforeEach(async () => {

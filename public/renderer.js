@@ -67,15 +67,24 @@ const { ipcRenderer, shell } = require('electron');
     el.addEventListener('click', back);
   });
 
-  ipcRenderer.on('error', (evt, { message, error }) => {
+  ipcRenderer.on('error', (evt, { message, error, details }) => {
     console.log('message, error', message, error);
     $('#error-message').innerText = message || 'An unexpected error ocurred:';
     if (error) {
       console.error(error);
-      $('#error-details').innerText = `${error.stack}`;
+      if (error.message && error.details) {
+        $('#error-message').innerText = error.message;
+        $('#error-details').innerText = error.details;
+      } else {
+        $('#error-details').innerText = `${error.stack}`;
+      }
       show('#error-details');
     } else {
-      hide('#error-details');
+      if (details) {
+        $('#error-details').innerText = `${details}`;
+      } else {
+        hide('#error-details');
+      }
     }
     showOnly('error');
   });

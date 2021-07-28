@@ -3,11 +3,38 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 source "$SCRIPT_DIR/../.env"
 
-echo "Importing $1 as a test fixture."
-KBPATH="$1"
+KBPATH="keyboards/$1"
 KBNAME="${1##*/}"
-echo $KBPATH $KBNAME
-mkdir -p "./test/fixtures/$KBPATH"
-cp "../qmk_firmware/keyboards/$KBPATH/config.h" "./test/fixtures/$KBPATH"
-cp "../qmk_firmware/keyboards/$KBPATH/$KBNAME.h" "./test/fixtures/$KBPATH"
-cp "../qmk_firmware/keyboards/$KBPATH/info.json" "./test/fixtures/$KBPATH"
+
+find_file() {
+  FILE="$QMK_PATH/$KBPATH/$1"
+  if [ ! -f "$FILE" ]; then
+    FILE="$QMK_PATH/$KBPATH/../$1"
+    if [ ! -f "$FILE" ]; then
+      echo "Couldn't find $1 file."
+      exit 2
+    fi
+  fi
+  echo "$FILE"
+}
+
+CONFIG_FILE="$(find_file config.h)"
+HEADER_FILE="$(find_file $KBNAME.h)"
+LAYOUT_FILE="$(find_file info.json)"
+
+echo "Importing $1 as a test fixture."
+if [ ! -d "$QMK_PATH/$KBPATH" ]; then
+    echo "ERROR: Keyboard ${KBNAME} doesn't exist."
+    echo "Expected $QMK_PATH/$KBPATH to be an existing directory."
+    exit 1
+fi
+
+echo $CONFIG_FILE
+echo $HEADER_FILE
+echo $LAYOUT_FILE
+
+
+# mkdir -p "./test/fixtures/$KBPATH"
+# cp "$QMK_PATH/$KBPATH/config.h" "./test/fixtures/$KBPATH"
+# cp "$QMK_PATH/$KBPATH/$KBNAME.h" "./test/fixtures/$KBPATH"
+# cp "$QMK_PATH/$KBPATH/info.json" "./test/fixtures/$KBPATH"

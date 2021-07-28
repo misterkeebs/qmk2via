@@ -11,7 +11,9 @@ unhandled({
 console.log = log.log;
 
 const Board = require('./src/Board');
-const MissingMatrixError = require('./src/MissingMatrixError');
+const MissingMatrixError = require('./src/errors/MissingMatrixError');
+const MissingRequiredFileError = require('./src/errors/MissingRequiredFileError');
+const NotQMKError = require('./src/errors/NotQMKError');
 
 try {
   require('electron-reloader')(module)
@@ -73,24 +75,24 @@ ipcMain.on('select-keyboard', async (event, arg) => {
   });
   if (result.canceled) return;
 
-  class MissingRequiredFileError extends Error { }
-
   const tryAndRead = (file, error) => {
     if (!fs.existsSync(file)) {
       const expected = path.basename(file);
-      throw new MissingRequiredFileError(`Directory doesn't seem to have a valid QMK keyboard definition. Required file missing: ${expected}.`);
+      throw new MissingRequiredFileError(file);
     }
     return fs.readFileSync(file, 'utf8');
   }
 
   try {
     const [mainPath] = result.filePaths;
-    name = mainPath.split(path.sep).pop();
-    const header = tryAndRead(`${mainPath}/${name}.h`);
-    const config = tryAndRead(`${mainPath}/config.h`);
-    const info = tryAndRead(`${mainPath}/info.json`);
-    console.log('before board');
-    board = new Board(header, config, info, { name });
+    // name = mainPath.split(path.sep).pop();
+    // const header = tryAndRead(`${mainPath}/${name}.h`);
+    // const config = tryAndRead(`${mainPath}/config.h`);
+    // const info = tryAndRead(`${mainPath}/info.json`);
+    // console.log('before board');
+    // board = new Board(header, config, info, { name });
+    board = Board.fromPath(mainPath);
+    name = board.name;
     const images = {};
     const tmpPath = temp.mkdirSync('qmktools');
     for (let i = 0; i < Object.values(board.layouts).length; i++) {
@@ -113,9 +115,13 @@ ipcMain.on('select-keyboard', async (event, arg) => {
       console.log('missing matrix error', { message: error.message });
       event.reply('error', { message: error.message });
     }
+    else if (error instanceof NotQMKError) {
+      console.log(error);
+      event.reply('error', { message: error.message, details: error.details });
+    }
     else if (error instanceof MissingRequiredFileError) {
-      console.log('sending', { message: error.message });
-      event.reply('error', { message: error.message });
+      console.log('sending', error);
+      event.reply('error', error);
     } else {
       console.log('sending', { error });
       event.reply('error', { error });
