@@ -41,3 +41,14 @@ Select the file you saved beforehand and it should open on VIA:
 ![VIA Design tab](doc/via3.png)
 
 And you're done. Just plug in the keyboard and VIA should work automatically.
+
+## Building in Windows
+
+Electron is apparently having a lot of issues with building dependencies, so a little bit of work is needed:
+
+```
+cd node_modules/canvas
+npm i nan@2.14.0
+cd ../..
+yarn run electron-rebuild
+```
