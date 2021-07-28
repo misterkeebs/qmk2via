@@ -8,6 +8,25 @@ const Header = require('../src/Header');
 describe('Header', async () => {
   let header;
 
+  describe('weirdly formatted header', async () => {
+    beforeEach(async () => {
+      const raw = readFixture('wd60_d/wd60_d.h');
+      header = new Header(raw);
+    });
+
+    it('parses the matrix', async () => {
+      expect(header.matrices['all'][10]).to.eql([0, 12]);
+      expect(header.matrices['all'].filter(arr => _.isNaN(parseInt(arr[0], 10)) || _.isNaN(parseInt(arr[1], 10))).length).to.eql(0);
+    });
+  });
+
+  describe('with invalid matrix', async () => {
+    it('raises an error', async () => {
+      const raw = readFixture('invalid.h');
+      expect(() => new Header(raw)).to.throw(/The matrix for layout LAYOUT_all has a missing definition for key K014./);
+    });
+  });
+
   describe('header with KFF notation', async () => {
     beforeEach(async () => {
       const raw = readFixture('an_c/an_c.h');
@@ -32,6 +51,17 @@ describe('Header', async () => {
     });
   });
 
+  describe('header with notation using alphas', async () => {
+    beforeEach(async () => {
+      header = new Header(readFixture('octagon/v2/v2.h'));
+    });
+
+    it('generates the via file', async () => {
+      const matrix = header.matrices['75_ansi'];
+      expect(matrix[20]).to.eql([1, 4]);
+      expect(header.matrices['75_ansi'].filter(arr => _.isNaN(parseInt(arr[0], 10)) || _.isNaN(parseInt(arr[1], 10))).length).to.eql(0);
+    });
+  });
 
   describe('header with multiple layouts', async () => {
     beforeEach(async () => {
@@ -91,7 +121,7 @@ describe('Header', async () => {
     });
 
     it('parses the matrix', async () => {
-      expect(header.matrices['default'][15]).to.eql([0, 15]);
+      expect(header.matrices['default'][15]).to.eql([4, 14]);
     });
   });
 
