@@ -38,6 +38,7 @@
   },
   "scripts": {
     "start": "electron .",
+    "macstart": "cp ./.bins/canvas.node.electron node_modules/canvas/build/Release/canvas.node && electron .",
     "cli": "node cli.js",
     "test": "NODE_ENV=test DB_ENV=test mocha './test/**/*.spec.js'",
     "test:watch": "NODE_ENV=test DB_ENV=test mocha -w './test/**/*.spec.js'",

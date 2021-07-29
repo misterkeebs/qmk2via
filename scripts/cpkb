@@ -29,12 +29,10 @@ if [ ! -d "$QMK_PATH/$KBPATH" ]; then
     exit 1
 fi
 
-echo $CONFIG_FILE
-echo $HEADER_FILE
-echo $LAYOUT_FILE
-
-
-# mkdir -p "./test/fixtures/$KBPATH"
-# cp "$QMK_PATH/$KBPATH/config.h" "./test/fixtures/$KBPATH"
-# cp "$QMK_PATH/$KBPATH/$KBNAME.h" "./test/fixtures/$KBPATH"
-# cp "$QMK_PATH/$KBPATH/info.json" "./test/fixtures/$KBPATH"
+mkdir -p "./test/fixtures/$KBNAME"
+echo "$CONFIG_FILE -> ./test/fixtures/$KBNAME"
+cp "$CONFIG_FILE" "./test/fixtures/$KBNAME"
+echo "$HEADER_FILE -> ./test/fixtures/$KBNAME"
+cp "$HEADER_FILE" "./test/fixtures/$KBNAME"
+echo "$LAYOUT_FILE -> ./test/fixtures/$KBNAME"
+cp "$LAYOUT_FILE" "./test/fixtures/$KBNAME"
