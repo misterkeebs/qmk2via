@@ -33,6 +33,11 @@ const { ipcRenderer, shell } = require('electron');
     ipcRenderer.send('load-via-preview');
   });
 
+  $('#settings').addEventListener('click', evt => {
+    evt.preventDefault();
+    ipcRenderer.send('load-settings');
+  });
+
   const restart = evt => {
     evt.preventDefault();
     kb.reset();
@@ -142,6 +147,31 @@ const { ipcRenderer, shell } = require('electron');
       shell.openExternal(`file://${file}`);
     });
     showOnly('success');
+  });
+
+  ipcRenderer.on('settings-loaded', async (event, labels) => {
+    $('#labels').innerHTML = '';
+
+    labels.forEach(label => {
+      const labelEl = document.createElement('div');
+      labelEl.className = 'label';
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'label-name';
+      nameEl.innerHTML = label[0];
+      labelEl.appendChild(nameEl);
+
+      label.slice(1).forEach(option => {
+        const optionEl = document.createElement('div');
+        optionEl.className = 'label-value';
+        optionEl.innerHTML = option;
+        labelEl.appendChild(optionEl);
+      });
+
+      $('#labels').appendChild(labelEl);
+    });
+
+    showOnly('settings');
   });
 
   ipcRenderer.send('select-keyboard');

@@ -167,11 +167,28 @@ a {
   padding: 10px;
   margin: 0 5px;
   margin-top: 10px;
+  cursor: pointer;
+}
+
+.layouts > div:hover {
+  background-color: #444;
 }
 
 .layout > img {
   max-width: 500px;
   max-height: 300px;
+}
+
+/**
+ * VIA Settings Panel
+ */
+
+.label {
+  display: flex;
+}
+
+.label-name, .label-value {
+  flex: 1;
 }
 
 /**

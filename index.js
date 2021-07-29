@@ -160,3 +160,9 @@ ipcMain.on('load-kle-permalink', (event, name) => {
   log.log('KLE URL', url);
   event.reply('kle-permalink-loaded', `file://${getRedirectFile(url)}`);
 });
+
+ipcMain.on('load-settings', event => {
+  const via = board.toVia();
+  const labels = JSON.parse(via).layouts.labels;
+  event.reply('settings-loaded', labels);
+});
