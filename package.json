@@ -1,6 +1,6 @@
 {
   "name": "qmk2via",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": "MrKeebs <felipe.coury@gmail.com>",
   "main": "index.js",
   "license": "MIT",
