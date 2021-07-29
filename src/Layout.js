@@ -4,6 +4,7 @@ const _ = require('lodash');
 
 const Key = require('./Key');
 const Kle = require('./Kle');
+const { sortKeys } = require('./Utils');
 
 class Layout {
   constructor(name, rows, cols, matrix, layout) {
@@ -26,7 +27,7 @@ class Layout {
   }
 
   getRow(n) {
-    return _.sortBy(this.keys.filter(key => key.y === this.yValues[n]), 'x');
+    return _.sortBy(this.keys.filter(key => parseInt(key.y, 10) === this.yValues[n]), 'x');
   }
 
   forEachRow(fn) {
@@ -113,9 +114,9 @@ class Layout {
   }
 
   process() {
-    this.yValues = _(this.layout).map(l => l.y).uniq().sort().value();
+    this.yValues = _(this.layout).map(l => parseInt(l.y, 10)).uniq().sort().value();
     const rows = [...Array(this.yValues.length)].map(e => []);
-    const layout = _.sortBy(this.layout, ['y', 'x']);
+    const layout = sortKeys(this.layout);
 
     let cy = 0;
     let crow = 0;
@@ -124,7 +125,7 @@ class Layout {
       if (key.y > cy) {
         cy = key.y;
         ccol = 0;
-        crow = this.yValues[cy];
+        crow = this.yValues[parseInt(cy, 10)];
       }
       const matrixKey = this.keys[i];
       matrixKey.set({
@@ -214,7 +215,6 @@ class Layout {
       ctx.strokeStyle = '#aaa';
       ctx.lineWidth = 1;
       strokeRoundRect(ctx, x0 + d2, y0 + d2 - 1, x1 - (d2 * 2), y1 - (d * 4) + 1, 3);
-
 
       const d3 = d2 + 4;
       ctx.fillStyle = '#000';

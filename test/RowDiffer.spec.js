@@ -25,7 +25,7 @@ describe('RowDiffer', async () => {
     expect(res).to.eql(`[{"w":1.25,"c":"#cccccc"},"Ctrl\\n\\n\\n4,0",{"w":1.25},"Win\\n\\n\\n4,0",{"w":1.25},"Alt\\n\\n\\n4,0",{"w":6.25},"\\n\\n\\n4,0",{"w":1.25},"Win\\n\\n\\n4,0",{"w":1.25},"Alt\\n\\n\\n4,0",{"w":1.25},"Menu\\n\\n\\n4,0",{"w":1.25},"Ctrl\\n\\n\\n4,0",{"w":1.5,"x":0.25},"Ctrl\\n\\n\\n4,1","Win\\n\\n\\n4,1",{"w":1.5},"Alt\\n\\n\\n4,1",{"w":7},"\\n\\n\\n4,1",{"w":1.5},"Win\\n\\n\\n4,1","Alt\\n\\n\\n4,1",{"w":1.5},"Ctrl\\n\\n\\n4,1"]`);
   });
 
-  it(`does't repeat same items`, async () => {
+  itx(`does't repeat same items`, async () => {
     const board = loadBoard('signature65');
     const layouts = Object.values(board.layouts);
     const rd = new RowDiffer(layouts[0].getRow(4));

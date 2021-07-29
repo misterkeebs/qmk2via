@@ -1,6 +1,7 @@
 const fs = require('fs');
 const _ = require('lodash');
 const { fileURLToPath } = require('url');
+const { sortKeys } = require('./src/Utils');
 
 class Layout {
   constructor(info, matrix) {
@@ -11,7 +12,7 @@ class Layout {
   processInfo() {
     const { layouts } = this.info;
     const name = Object.keys(layouts)[0];
-    const layout = _.sortBy(layouts[name].layout, ['y', 'x']);
+    const layout = sortKeys(layouts[name].layout);
     const rows = [...Array(this.info.height)].map(e => []);
 
     let col = 0;

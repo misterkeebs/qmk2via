@@ -12,7 +12,7 @@ class Header {
   }
 
   parse() {
-    const LAYOUT_PARSER_RE = /#define LAYOUT(?<name>[^\(]*?)?\((?<matrix>.*?)\)[\s\n\\]+\{[\s\\]+(?<pool>.*?)\}\n*$/gms;
+    const LAYOUT_PARSER_RE = /#define LAYOUT(?<name>[^\(]*?)?\((?<matrix>.*?)\)[\s\n\\]*\{[\s\\]+(?<pool>.*?)\}\n*$/gms;
     const MATRIX_PARSER_RE = /\{[\s\\]*(.*?)[\s\\]*\}/gm;
 
     const matrices = {};

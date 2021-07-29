@@ -1,8 +1,9 @@
 const _ = require('lodash');
+const { sortKeys } = require('./Utils');
 
 class Kle {
   constructor(keys) {
-    this.keys = _.sortBy(keys, ['y', 'x']);
+    this.keys = sortKeys(keys);
   }
 
   asJson(label) {
@@ -12,17 +13,19 @@ class Kle {
     let cx = 0;
     let cy = 0;
     let opts = {};
+    let ry = 0;
 
-    _.sortBy(this.keys, ['y', 'x']).forEach(key => {
-      if (key.y > cy) {
+    this.keys.forEach(key => {
+      if (key.y >= cy + 1) {
         rows.push(_.clone(crow));
         crow.length = 0;
         cx = 0;
         cy += 1;
-        if (key.y > cy) {
-          opts.y = key.y - cy;
-          cy = key.y;
-        }
+        ry = parseFloat((ry + 1).toFixed(2));
+      }
+      if (key.y !== ry) {
+        opts.y = parseFloat((key.y - ry).toFixed(2));
+        ry = key.y;
       }
       if (key.w > 1) opts.w = key.w;
       if (key.h > 1) opts.h = key.h;

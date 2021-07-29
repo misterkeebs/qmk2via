@@ -49,6 +49,22 @@ describe('Layout', async () => {
     });
   });
 
+  describe('with y offsets', async () => {
+    let layout;
+
+    beforeEach(async () => {
+      const header = new Header(readFixture('reviung39/reviung39.h'));
+      const info = JSON.parse(readFixture('reviung39/info.json'));
+      const matrix = header.matrices.reviung39;
+      layout = new Layout('reviung39', 5, 14, matrix, info.layouts.LAYOUT_reviung39.layout);
+    });
+
+    it('set offsets', async () => {
+      const row = layout.getRow(0);
+      expect(row[0].y).to.equal(0.54);
+    });
+  });
+
   describe('with a non-linear matrix', async () => {
     let layout;
 
