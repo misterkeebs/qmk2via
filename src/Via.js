@@ -5,28 +5,14 @@ const RowDiffer = require('./RowDiffer');
 
 const { getLayoutName } = require('./Utils');
 
-// 1. Go through all rows
-// 2. Classify them rows changes in start, end, both or total
-// 3. Go through the changes in start and see what's the max X offset we need
-// 4. Iterate through the rows
-// 5. For each row, find the max X offset and apply it to the row
-//   5.1. When diff is total
-//     5.1.1. If last row, add 0.5u to current Y
-//     5.1.2. Add base row
-//     5.1.3. Add all the different rows
-//   5.2. When diff is start
-//     5.2.1. Iterate through all the different starts, adding them with a 0.25u offset between them
-//   5.3. When diff is start and end
-//     5.3.1. Add the base row part that's common between all different rows
-//   5.3. When diff is end
-//     5.3.1. Iterate through all the different ends, adding them with a 0.25u offset between them
-
 class Via {
   constructor(board, mainLayout) {
     this.board = board;
     this.mainLayout = getLayoutName(mainLayout || board.info.mainLayout);
     this.layouts = board.layouts;
     this.config = board.config;
+    this.keys = this.initKeys();
+    this.labels = this.initLabels();
   }
 
   getLayoutRow(name, row) {
@@ -34,7 +20,7 @@ class Via {
     if (layout) return layout.getRow(row);
   }
 
-  getKeys() {
+  initKeys() {
     const baseLayout = this.layouts[this.mainLayout];
     const altLayouts = Object.values(this.layouts).filter(l => l.name !== this.mainLayout);
 
@@ -49,7 +35,11 @@ class Via {
     }).reduce((a, b) => a.concat(b));
   }
 
-  toString() {
+  getKeys() {
+    return this.keys;
+  }
+
+  initLabels() {
     const keys = this.getKeys();
     const lastLabelNum = _.max(keys.filter(k => k.viaLabel).map(k => k.viaLabel[0]));
 
@@ -68,16 +58,24 @@ class Via {
       labels.push(labelRow);
     }
 
+    return labels;
+  }
+
+  getLabels() {
+    return this.labels;
+  }
+
+  toString() {
+    const keys = this.getKeys();
+    const labels = this.getLabels();
+    const keymap = new Kle(keys).asJson('matrix')
     return JSON.stringify({
       name: `${this.config.manufacturer} ${this.config.product}`,
       productId: this.config.productId,
       vendorId: this.config.vendorId,
       lighting: 'none',
       matrix: { rows: this.config.rows, cols: this.config.cols },
-      layouts: {
-        labels: labels,
-        keymap: new Kle(keys).asJson('matrix'),
-      },
+      layouts: { labels, keymap },
     }, null, 2);
   }
 
