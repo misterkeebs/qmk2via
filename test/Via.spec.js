@@ -7,11 +7,11 @@ const { loadBoard } = require('./utils');
 
 describe('Via', async () => {
   describe('generating the Via file for board with two variations', async () => {
-    let contents;
+    let via, contents;
 
     beforeEach(async () => {
       const board = loadBoard('signature65');
-      const via = new Via(board);
+      via = new Via(board);
       contents = JSON.parse(via.toString());
     });
 
@@ -32,9 +32,29 @@ describe('Via', async () => {
         ['Label 2', 'Option 1', 'Option 2'],
       ]);
     });
+
+    describe('getLabelKeys', async () => {
+      it('returns full backspace for label 1, option 1', async () => {
+        const keys = via.getLabelKeys(0, 0);
+        expect(keys.length).to.eql(1);
+
+        const fullBackspace = keys[0];
+        expect(fullBackspace.label).to.eql('Backspace\n\n\n0,0');
+      });
+
+      it('returns 2 keys for split backspace for label 1, option 2', async () => {
+        const keys = via.getLabelKeys(0, 1);
+        expect(keys.length).to.eql(2);
+
+        console.log('keys', keys);
+
+        expect(keys[0].label).to.eql('|\n\n\n0,1');
+        expect(keys[1].label).to.eql('~\n\n\n0,1');
+      });
+    });
   });
 
-  describe('generating the Via file for board with multiple variations', async () => {
+  describe.only('generating the Via file for board with multiple variations', async () => {
     let contents;
 
     beforeEach(async () => {
@@ -45,6 +65,7 @@ describe('Via', async () => {
 
     it('generates the labels', async () => {
       const { labels } = contents.layouts;
+      console.log('labels', labels);
       expect(labels[12]).to.eql(['Label 13', 'Option 1', 'Option 2', 'Option 3', 'Option 4']);
     });
   });

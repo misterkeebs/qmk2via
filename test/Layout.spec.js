@@ -49,6 +49,32 @@ describe('Layout', async () => {
     });
   });
 
+  describe('with 65 layout', () => {
+    let header, info, matrices;
+
+    beforeEach(async () => {
+      header = new Header(readFixture('signature65/signature65.h'));
+      info = JSON.parse(readFixture('signature65/info.json'));
+      matrices = header.matrices;
+    });
+
+    it('returns the row and column for full BS layout', async () => {
+      const layout = new Layout('fc65_625_full_bs', 5, 14, matrices['fc65_625_full_bs'], info.layouts.LAYOUT_fc65_625_full_bs.layout);
+      const row = layout.getRow(0);
+      const key = row.pop();
+      expect(key.row).to.eql(0);
+      expect(key.col).to.eql(15);
+    });
+
+    it('returns the row and column for split BS layout', async () => {
+      const layout = new Layout('fc65_625_split_bs', 5, 14, matrices['fc65_625_split_bs'], info.layouts.LAYOUT_fc65_625_split_bs.layout);
+      const row = layout.getRow(0);
+      const key = row.pop();
+      expect(key.row).to.eql(0);
+      expect(key.col).to.eql(15);
+    });
+  });
+
   describe('with y offsets', async () => {
     let layout;
 

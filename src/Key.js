@@ -66,10 +66,19 @@ class Key {
     };
   }
 
+  toMatrixJSON() {
+    return {
+      row: this.row,
+      col: this.col,
+      h: this.h,
+      w: this.w,
+      label: this.label,
+    };
+  }
+
   hashCode() {
-    const json = this.toJSON();
-    delete json.c;
-    return hash(json);
+    // return hash(this.toMatrixJSON());
+    return JSON.stringify(this.toMatrixJSON());
   }
 
   set(props) {

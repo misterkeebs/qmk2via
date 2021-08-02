@@ -28,6 +28,7 @@ class Via {
     return baseLayout.map((row, i) => {
       const differ = new RowDiffer(baseLayout.getRow(i), lastLabelNum + 1);
       const rows = altLayouts.map(l => l.getRow(i));
+      console.log('rows', rows);
       const keys = differ.diff(...rows);
       const max = _.max(keys.filter(k => k.viaLabel).map(k => k.viaLabel[0]));
       lastLabelNum = _.isUndefined(max) ? lastLabelNum : max;
@@ -65,6 +66,11 @@ class Via {
     return this.labels;
   }
 
+  getLabelKeys(label, option) {
+    const re = new RegExp(`\n\n\n${label},${option}`);
+    return this.keys.filter(k => k.label.match(re));
+  }
+
   toString() {
     const keys = this.getKeys();
     const labels = this.getLabels();
@@ -80,7 +86,7 @@ class Via {
   }
 
   toPermalink() {
-    return new Kle(this.getKeys()).toPermalink('matrix');
+    return new Kle(this.getKeys()).toPermalink('x');
   }
 }
 

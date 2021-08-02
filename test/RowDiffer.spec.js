@@ -25,6 +25,19 @@ describe('RowDiffer', async () => {
     expect(res).to.eql(`[{"w":1.25,"c":"#cccccc"},"Ctrl\\n\\n\\n4,0",{"w":1.25},"Win\\n\\n\\n4,0",{"w":1.25},"Alt\\n\\n\\n4,0",{"w":6.25},"\\n\\n\\n4,0",{"w":1.25},"Win\\n\\n\\n4,0",{"w":1.25},"Alt\\n\\n\\n4,0",{"w":1.25},"Menu\\n\\n\\n4,0",{"w":1.25},"Ctrl\\n\\n\\n4,0",{"w":1.5,"x":0.25},"Ctrl\\n\\n\\n4,1","Win\\n\\n\\n4,1",{"w":1.5},"Alt\\n\\n\\n4,1",{"w":7},"\\n\\n\\n4,1",{"w":1.5},"Win\\n\\n\\n4,1","Alt\\n\\n\\n4,1",{"w":1.5},"Ctrl\\n\\n\\n4,1"]`);
   });
 
+  it('tracks the right characters', async () => {
+    const base = makeRow('~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', ['Backspace', { w: 2 }], 'Home');
+    const row1 = makeRow('~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '|', '~', 'Home');
+    const row2 = makeRow('~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', ['Backspace', { w: 2 }], 'Home');
+    const row3 = makeRow('~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '|', '~', 'Home');
+    base[base.length - 1].col = 15;
+    row2[row2.length - 1].col = 15;
+    const rd = new RowDiffer(base);
+    const diff = rd.diff(row1, row2, row3);
+    const res = new Kle(diff).toKle();
+    expect(res).to.eql(`[{"c":"#cccccc"},"~","!","@","#","$","%","^","&","*","(",")","_","+",{"w":2,"c":"#aaaaaa"},"Backspace\\n\\n\\n0,0",{"c":"#cccccc"},"Home",{"x":0.25,"c":"#aaaaaa"},"|\\n\\n\\n0,1","~\\n\\n\\n0,1"]`);
+  });
+
   itx(`does't repeat same items`, async () => {
     const board = loadBoard('signature65');
     const layouts = Object.values(board.layouts);
