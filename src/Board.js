@@ -51,7 +51,6 @@ class Board {
     }
 
     const [name, displayName] = resolveName(keyboardPath);
-    console.log('name', name);
 
     if (!name) {
       throw new NotQMKError(keyboardPath);
