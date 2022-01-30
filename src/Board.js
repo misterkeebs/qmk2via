@@ -51,6 +51,7 @@ class Board {
     }
 
     const [name, displayName] = resolveName(keyboardPath);
+    console.log('name', name);
 
     if (!name) {
       throw new NotQMKError(keyboardPath);
@@ -68,7 +69,7 @@ class Board {
     this.debug = debug;
     this.name = name;
     this.header = new Header(header);
-    this.config = new Config(config);
+    this.config = new Config(config, name);
     this.info = new Info(info);
     this.layouts = this.makeLayouts();
   }

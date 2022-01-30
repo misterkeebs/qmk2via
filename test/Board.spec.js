@@ -28,6 +28,19 @@ describe('Board', async () => {
     });
   });
 
+  describe('board with no PRODUCT on config', async () => {
+    beforeEach(async () => {
+      const layouts = readFixture('mb44/mb44.h');
+      const info = readFixture('mb44/info.json');
+      const config = readFixture('mb44/config.h');
+      board = new Board(layouts, config, info, { name: 'mb44' });
+    });
+
+    it('uses the board name as product', async () => {
+      expect(board.config.product).to.eql('mb44');
+    });
+  });
+
   describe('board with different bottom rows', async () => {
     beforeEach(async () => {
       const layouts = readFixture('tmo50/tmo50.h');

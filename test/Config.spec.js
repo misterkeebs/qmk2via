@@ -13,5 +13,6 @@ describe('Config', async () => {
     expect(new Config(readFixture('mechmini/v2/config.h')).productId).to.equal('0xCA40');
     expect(new Config(readFixture('mechmini/v2/config.h')).manufacturer).to.equal('MECHKEYS');
     expect(new Config(readFixture('mechmini/v2/config.h')).product).to.equal('Mechmini 2');
+    expect(new Config(readFixture('mb44/config.h'), 'mb44').product).to.equal('mb44');
   });
 });
