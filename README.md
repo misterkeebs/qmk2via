@@ -52,3 +52,11 @@ npm i nan@2.14.0
 cd ../..
 yarn run electron-rebuild
 ```
+
+# Running tests on Mac
+
+If you get an error complaining about canvas, use node 16 and run this:
+
+```
+npm rebuild canvas --update-binary
+```
